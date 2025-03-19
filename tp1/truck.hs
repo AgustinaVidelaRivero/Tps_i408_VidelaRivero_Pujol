@@ -18,7 +18,7 @@ loadT :: Truck -> Palet -> Truck        -- Carga un palet en el camion
 loadT (Tru stacks route) palet = 
   case loadPalet stacks of
     Just newStacks -> Tru newStacks route     -- Caso sí se encontró una bahía apropiada para el nuevo palet; se construye un nuevo camión con las bahías actualizadas
-    Nothing -> error "No se encontró ninguna bahía adecuada para cargar el palet en este camión"
+    Nothing -> Tru stacks route  -- Devuelve el camión original sin cambios
   where
     loadPalet [] = Nothing      -- Caso base: si la lista de pilas esta vacía entonces no se encontró una bahía apropiada para el palet
     loadPalet (stack:rest) | holdsS stack palet route =   -- Si se puede apilar el palet segun la ruta destino,
