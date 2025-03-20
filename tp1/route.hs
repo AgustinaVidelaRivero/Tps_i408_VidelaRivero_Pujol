@@ -1,6 +1,5 @@
 module Route ( Route, newR, inOrderR, inRouteR )
     where
-import Route (inOrderR)
 
 data Route = Rou [ String ] deriving (Eq, Show)
 
