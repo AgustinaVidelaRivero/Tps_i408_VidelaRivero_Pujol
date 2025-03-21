@@ -6,8 +6,15 @@ import Route (Route, newR, inOrderR, inRouteR) -- Sin los constructores
 
 data Stack = Sta [ Palet ] Int deriving (Eq, Show)
 
-newS :: Int -> Stack                      -- construye una bahia con la capacidad indicada (la altura)
-newS cap_max = Sta [] cap_max
+-- newS :: Int -> Stack                      -- construye una bahia con la capacidad indicada (la altura)
+-- newS cap_max = Sta [] cap_max
+
+--POSIBLE MEJORA: no permitir la creacion de bahias con capacidad 0 o negativa
+newS :: Int -> Stack
+newS cap_max 
+    | cap_max <= 0 = error "Error: La altura de la pila debe ser mayor a 0"
+    | otherwise = Sta [] cap_max
+
 
 freeCellsS :: Stack -> Int                -- responde la celdas disponibles en la bahia
 freeCellsS (Sta palets cap_max) = cap_max - length palets
@@ -19,13 +26,20 @@ stackS (Sta palets cap_max) palet | freeCellsS (Sta palets cap_max) == 0 = Sta p
                                   | netS (Sta palets cap_max) + netP palet > 10 = Sta palets cap_max  -- No tolera mas peso, no carga
                                   | otherwise = Sta (palets ++ [palet]) cap_max
 
+
 netS :: Stack -> Int                      -- responde el peso neto de los paletes en la bahia
 netS (Sta palets cap_max) = foldr (\palet acum -> acum + netP palet) 0 palets
 
+-- holdsS :: Stack -> Palet -> Route -> Bool -- indica si la bahia puede aceptar el palet considerando las ciudades en la ruta
+-- holdsS (Sta palets _) palet route | null palets = True
+--                                   | inOrderR route (destinationP palet) (destinationP (last palets)) = True
+--                                   | otherwise = False
+
+--posible mejora usando reverse para no tener que reocrrer toda la lista
 holdsS :: Stack -> Palet -> Route -> Bool -- indica si la bahia puede aceptar el palet considerando las ciudades en la ruta
 holdsS (Sta palets _) palet route | null palets = True
-                                  | inOrderR route (destinationP palet) (destinationP (last palets)) = True
-                                  | otherwise = False
+                                    | inOrderR route (destinationP palet) (destinationP (head(reverse palets))) = True
+                                    | otherwise = False
 
 popS :: Stack -> String -> Stack          -- quita del tope los paletes con destino en la ciudad indicada
 popS (Sta palets cap_max) ciudad | null palets = Sta palets cap_max
