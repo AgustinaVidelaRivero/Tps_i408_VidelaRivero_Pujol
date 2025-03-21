@@ -34,36 +34,6 @@ loadT (Tru stacks route) palet =
                              in Just (newStack : rest) -- Devuelve Just con una lista renovada de pilas donde newStack es a la que se añadió el palet, y se mantiene rest igual.
                            | otherwise = fmap (stack :) (loadPalet rest)  -- Recursivamente intenta cargar el palet en el resto de las bahías. fmap añade la bahía actual no modificada (stack) al resultado de la siguiente llamada recursiva, si es exitosa.
 
---POSIBLE MEJORA: lo hago con funcion auxiliar
--- loadT :: Truck -> Palet -> Truck
--- loadT (Tru stacks route) palet
---     | freeCellsT (Tru stacks route) == 0 = Tru stacks route  -- No carga si está lleno
---     | otherwise = Tru (cargarPalet stacks palet route) route
-
--- cargarPalet :: [Stack] -> Palet -> Route -> [Stack]
--- cargarPalet [] _ _ = []  
--- cargarPalet (s:ss) palet route | freeCellsS s > 0 && holdsS s palet route = stackS s palet : ss
---                                 | otherwise = s : cargarPalet ss palet route
-
-
---CORRECCION DE LOADT SEGUN LOS TESTS
--- loadT :: Truck -> Palet -> Truck
--- loadT (Tru stacks route) palet
---   | freeCellsT (Tru stacks route) == 0 = Tru stacks route
---   | netP palet <= 0 || netP palet > 10 = Tru stacks route
---   | not (inRouteR route (destinationP palet)) = Tru stacks route
---   | otherwise = case loadPalet stacks of
---       Just newStacks -> Tru newStacks route  -- Se cargó exitosamente
---       Nothing -> Tru stacks route  -- No había bahía válida
-
---   where
---     loadPalet [] = Nothing  -- Si no hay bahías, no se puede cargar.
---     loadPalet (stack:rest)
---       | holdsS stack palet route = Just (stackS stack palet : rest) -- Carga el palet en la primera bahía posible.
---       | otherwise = fmap (stack :) (loadPalet rest)  -- Intenta en la siguiente bahía.
-
-
-
 unloadT :: Truck -> String -> Truck   -- responde un camion al que se le han descargado los paletes que podían descargarse en la ciudad
 unloadT (Tru stacks route) ciudad = Tru (map (`popS` ciudad) stacks) route
 

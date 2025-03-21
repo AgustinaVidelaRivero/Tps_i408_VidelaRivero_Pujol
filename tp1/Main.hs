@@ -143,6 +143,8 @@
 --     let results = map testF tests  -- Mapear sobre los tests y ejecutar testF
 --     print results  -- Imprimir la lista de resultados de pruebas
 
+
+
 module Main where
 
 import Palet
@@ -167,15 +169,18 @@ rutaLarga = newR ["Roma", "París", "Mdq", "Berna"]
 
 -- Ejemplos de palets
 palet1 = newP "Roma" 5
-palet2 = newP "París" 4
-paletInvalido1 = newP "Berna" 12  -- Debe corregirse a 10
-paletInvalido2 = newP "Mdq" (-5)  -- Debe corregirse a 1
+palet2 = newP "París" 4 
+paletInvalido1 = newP "Berna" 1
 paletValido = newP "París" 5  
 paletLiviano = newP "Roma" 2   
+paletLiviano2 = newP "Roma" 1
 
 -- Ejemplos de camiones
-camionInicial = newT 3 5 rutaLarga
-camionCargado = loadT camionInicial palet1  -- Carga palet1 en el camión
+camionInicial = newT 3 5 rutaLarga -- 3 bahias con altura 5
+camionChico = newT 1 3 rutaLarga  -- 1 bahia con altura 3
+camionCargado = loadT camionInicial palet1  
+camionCasiLleno = loadT (loadT camionChico palet2) palet1
+camionLleno = loadT (loadT (loadT camionChico palet2) palet1) paletLiviano2    -- este ultimo palet no se esta cargando NOSE PORQUE
 
 tests :: [Bool]
 tests = concat [paletsTests, rutasTests, stacksTests, camionesTests]
@@ -186,10 +191,10 @@ tests = concat [paletsTests, rutasTests, stacksTests, camionesTests]
       [ netP palet1 == 5,  -- Peso del palet 1
         destinationP palet2 == "París",  -- Ciudad destino del palet 2
 
-      -- Tests de corrección de valores de palets inválidos
-        netP (newP "Buenos Aires" (-5)) == 1,
-        netP (newP "Rosario" 0) == 1,
-        netP (newP "Córdoba" 15) == 10
+    -- Tests en los que los palets con peso invalido deben tirar error 
+        testF (newP "Buenos Aires" (-5)),
+        testF (newP "Rosario" 0),
+        testF (newP "Córdoba" 15)
       ]
 
     -- Tests de rutas
@@ -231,10 +236,14 @@ tests = concat [paletsTests, rutasTests, stacksTests, camionesTests]
       [ 
         -- Verificamos la cantidad de pilas y celdas libres
         freeCellsT camionInicial == 15, -- 3 pilas de altura 5
+        freeCellsT camionCasiLleno == 1,
+        freeCellsT camionLleno == 0,   -- ESTE TEST DA MAL PORQUE NO SE CARGA EL ULTIMO PALET 
 
-        -- Carga del palet --> VER PORQUE FALLA
+        -- Carga del palet 
         freeCellsT (loadT camionInicial palet1) == 14, -- Se ocupa una celda
-        freeCellsT (loadT camionCargado paletInvalido1) == freeCellsT camionCargado, -- El palet inválido no se carga
+        freeCellsT (loadT camionCasiLleno palet1) == freeCellsT (camionCasiLleno), -- El palet1 no se carga por sobrepeso en la bahia
+        freeCellsT (loadT camionCasiLleno palet2) == freeCellsT (camionCasiLleno), -- El palet2 no se carga por ruta invalida
+        freeCellsT (loadT camionLleno paletLiviano2) == freeCellsT (camionLleno), -- El palet Liviano no puede ser cargado porque no hay mas espacio en el camion
 
         -- Cargar un palet válido y verificar el estado
         let camionResultante = loadT camionCargado paletValido
@@ -248,7 +257,6 @@ tests = concat [paletsTests, rutasTests, stacksTests, camionesTests]
         -- Verificamos que descargar un destino inexistente no cambia el estado
         freeCellsT (unloadT camionCargado "Madrid") == freeCellsT camionCargado 
         && netT (unloadT camionCargado "Madrid") == netT camionCargado,
-
 
         -- Test de camión lleno --> VER PORQUE FALLA
         let camionLleno = loadT (loadT (loadT camionInicial palet1) palet2) paletValido
