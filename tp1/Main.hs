@@ -265,3 +265,5 @@ main = do
         then putStrLn "Todos los tests pasaron correctamente."
         else putStrLn "Algunos tests fallaron."
 
+    print tests
+
