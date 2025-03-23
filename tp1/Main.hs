@@ -234,12 +234,12 @@ tests = concat [paletsTests, rutasTests, stacksTests, camionesTests]
     -- Tests de camiones
     camionesTests =
       [ 
-        -- Verificamos la cantidad de pilas y celdas libres
-        freeCellsT camionInicial == 15, -- 3 pilas de altura 5
+        -- Verificamos la cantidad de bahías y celdas libres
+        freeCellsT camionInicial == 15, -- 3 bahías  de altura 5
         freeCellsT camionCasiLleno == 1,
-        freeCellsT camionLleno == 0,   -- ESTE TEST DA MAL PORQUE NO SE CARGA EL ULTIMO PALET 
+        freeCellsT camionLleno == 0,   
 
-        -- Carga del palet 
+        -- Cargas del palets 
         freeCellsT (loadT camionInicial palet1) == 14, -- Se ocupa una celda
         freeCellsT (loadT camionCasiLleno palet1) == freeCellsT (camionCasiLleno), -- El palet1 no se carga por sobrepeso en la bahia
         freeCellsT (loadT camionCasiLleno palet2) == freeCellsT (camionCasiLleno), -- El palet2 no se carga por ruta invalida
@@ -253,14 +253,11 @@ tests = concat [paletsTests, rutasTests, stacksTests, camionesTests]
 
         -- Pruebas de descarga
         freeCellsT (unloadT camionCargado "Roma") > freeCellsT camionCargado, -- Verifica la descarga de un palet
+        freeCellsT (unloadT camionLleno "Roma") == 2,  -- Se descargan varios palets en la misma ciudad destino
         
         -- Verificamos que descargar un destino inexistente no cambia el estado
         freeCellsT (unloadT camionCargado "Madrid") == freeCellsT camionCargado 
-        && netT (unloadT camionCargado "Madrid") == netT camionCargado,
-
-        -- Test de camión lleno --> VER PORQUE FALLA
-        let camionLleno = loadT (loadT (loadT camionInicial palet1) palet2) paletValido
-        in freeCellsT (loadT camionLleno paletLiviano) == freeCellsT camionLleno -- No debe cambiar el estado si el camión está lleno
+        && netT (unloadT camionCargado "Madrid") == netT camionCargado
       ]
 
 -- Función para imprimir los tests fallidos

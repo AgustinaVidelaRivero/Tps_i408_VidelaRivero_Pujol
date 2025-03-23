@@ -38,8 +38,9 @@ netS (Sta palets cap_max) = foldr (\palet acum -> acum + netP palet) 0 palets
 --posible mejora usando reverse para no tener que reocrrer toda la lista
 holdsS :: Stack -> Palet -> Route -> Bool -- indica si la bahia puede aceptar el palet considerando las ciudades en la ruta
 holdsS (Sta palets _) palet route | null palets = True
-                                    | inOrderR route (destinationP palet) (destinationP (head(reverse palets))) = True
-                                    | otherwise = False
+                                  | (destinationP palet == destinationP (head (reverse palets))) = True   -- si la ciudad destino del ultimo palet es igual a la del palet que quiero apilar
+                                  | inOrderR route (destinationP palet) (destinationP (head(reverse palets))) = True
+                                  | otherwise = False
 
 popS :: Stack -> String -> Stack          -- quita del tope los paletes con destino en la ciudad indicada
 popS (Sta palets cap_max) ciudad | null palets = Sta palets cap_max
