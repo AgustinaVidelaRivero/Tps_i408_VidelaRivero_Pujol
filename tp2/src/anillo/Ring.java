@@ -29,11 +29,11 @@ public class Ring {
     }
 
     public Ring add(Object cargo) {
-        elements.add(cargo); 
         if (currentIndex == -1) { // Si es el primer elemento, establece el índice actual a 0
             currentIndex = 0;
-        } else {
-            currentIndex++;         // Actualiza el indice (se agrega el elemento al "final" del anillo)
+            elements.add(cargo);
+        } else {         
+            elements.add(currentIndex, cargo);    // Se agrega el elemento en la posición especificada
         }
         return this;
     }
