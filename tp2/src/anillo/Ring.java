@@ -1,54 +1,81 @@
 package anillo;
-import java.util.ArrayList;
-import java.util.List;
+
+class Link {
+    Object cargo;  
+    Link prev;
+    Link next;     
+
+    Link(Object cargo) {
+        this.cargo = cargo;  
+        this.prev = null; 
+        this.next = null; 
+    }
+}
 
 public class Ring {
-    private List<Object> elements;
-    private int currentIndex;
+    private Link current; // Eslabón actual
+    private int size;     // Contador de elementos en el anillo
 
     // Constructor
     public Ring() {
-        this.elements = new ArrayList<>(); // Inicializa la lista vacía con el currentIndex en -1
-        this.currentIndex = -1;
+        this.current = null;
+        this.size = 0;
     }
 
     public Ring next() {
-        if (elements.isEmpty() || currentIndex == -1) {    // Caso anillo vacío
-            throw new RuntimeException("El anillo está vacío, no hay elemento siguiente"); 
-        } else {
-            currentIndex = (currentIndex + 1) % elements.size();  // Avanza de forma circular
-            return this; 
+        if (current == null) { // Si no hay elementos, no podemos avanzar
+            throw new RuntimeException("El anillo está vacío, no hay elemento siguiente");
         }
+        current = current.next; 
+        return this;
     }
 
     public Object current() {
-        if (elements.isEmpty() || currentIndex == -1) {     // Caso anillo vacio 
-            throw new RuntimeException("El anillo está vacío, no hay elemento actual"); 
+        if (current == null) { // Si no hay elementos, no hay un elemento actual
+            throw new RuntimeException("El anillo está vacío, no hay elemento actual");
         }
-        return elements.get(currentIndex); 
+        return current.cargo; // Devuelve el valor del eslabón actual
     }
 
     public Ring add(Object cargo) {
-        if (currentIndex == -1) { // Si es el primer elemento, establece el índice actual a 0
-            currentIndex = 0;
-            elements.add(cargo);
-        } else {         
-            elements.add(currentIndex, cargo);    // Se agrega el elemento en la posición especificada
+        Link newLink = new Link(cargo); // Crea un nuevo eslabón
+        if (current == null) { // Si el anillo estaba vacío
+            current = newLink; // Establece el eslabón actual al nuevo eslabón
+            current.next = current; // Hace referencia a sí mismo, creando un anillo circular
         }
-        return this;
+        if (current.next == current) {    // si solo hay un elemento
+            current.next = newLink;
+            current.prev = newLink;
+            newLink.next = current;
+            newLink.prev = current;
+            current = newLink;  
+        } else {
+            // Se agregan enlaces por "izquierda" (cambiando el prev en vez del next)
+            current.prev.next = newLink;
+            newLink.next = current;
+            newLink.prev = current.next;
+            current = newLink;
+        }
+        size++;
+        return this; 
     }
 
-    public Ring remove() {
-        if (elements.isEmpty()) {
-            throw new RuntimeException("No hay elementos para eliminar"); // Caso anillo vacío
+    public Ring remove() {                            // el current pasa a ser el next
+        if (current == null) { // Si está vacío 
+            throw new RuntimeException("No hay elementos para eliminar");
         }
-        elements.remove(currentIndex); 
-        // Ajustamos el índice 
-        if (elements.isEmpty()) {
-            currentIndex = -1; // Caso anillo queda vacío
+        if (current.next == current) {  // Si hay solo un elemento
+            current = null;
         } else {
-            currentIndex = currentIndex % elements.size(); // índice dentro del rango del anillo
+            current.next.next = current.prev;
+            current.prev.next = current.next;
+            next();                         
         }
-        return this;
+        size--; 
+        return this; 
+    }
+    
+    public int size() {
+        return size; 
     }
 }
