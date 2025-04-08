@@ -7,7 +7,6 @@ public class Ring {
     private Link current; // Eslabón actual
     private Stack<Supplier<Link>> stack;
 
-    // Constructor
     public Ring() {
         this.current = new EmptyLink();
         this.stack = new Stack<>();

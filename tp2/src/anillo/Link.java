@@ -73,7 +73,6 @@ class ValidLink extends Link {
         return newLink; // el nuevo current pasa a ser el que agrego
     }
 
-
     public Link remove(Stack<Supplier<Link>> stack){
 
         unlinkSelf();
