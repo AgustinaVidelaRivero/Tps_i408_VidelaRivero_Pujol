@@ -91,6 +91,6 @@ class ValidLink extends Link {
         this.prev.next = newLink;
         this.prev = newLink;
     }
-    }
+}
 
 

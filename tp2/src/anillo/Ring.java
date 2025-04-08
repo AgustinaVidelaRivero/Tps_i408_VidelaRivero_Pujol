@@ -4,7 +4,7 @@ import java.util.Stack;
 import java.util.function.Supplier;
 
 public class Ring {
-    private Link current; // Eslabón actual
+    private Link current;
     private Stack<Supplier<Link>> stack;
 
     public Ring() {
