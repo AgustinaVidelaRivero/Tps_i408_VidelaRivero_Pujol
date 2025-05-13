@@ -16,11 +16,14 @@ public class Jugador {
     public boolean tieneCarta(Carta carta) {
         return mano.contains(carta);
     }
-/* 
+ 
     public boolean puedeJugar(Carta carta, Carta cartaEnJuego) {        //cartaEnJuego es la de arriba del pozo
-        return carta.esJugableSobre(cartaEnJuego);
+        String color = cartaEnJuego.getColor();
+        int numero = cartaEnJuego.getNumero();
+        Class<? extends Carta> tipoEnPozo = cartaEnJuego.getClass();
+        return carta.esJugableSobre(color, numero, tipoEnPozo);
     }
-*/  //resolver esto
+
     public void quitarCarta(Carta carta) {
         mano.remove(carta);
     }
@@ -28,5 +31,4 @@ public class Jugador {
     public void agarrarCarta(Carta carta) {
         mano.add(carta);
     }
-
 }

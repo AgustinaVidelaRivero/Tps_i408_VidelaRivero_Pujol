@@ -79,32 +79,12 @@ class Juego {
         return this.pozo.peek();   // muestra la ultima carta tirada en el pozo, nunca va a estar vacio xq en el constructor del juego ponemos de entrada una carta en el pozo
     }
 
-/* 
-    public boolean ultimaCartaTiene(String color, int numero, Class<? extends Carta> tipo) {
+
+    public boolean ultimaCartaTiene(String color, int numero, Class<? extends Carta> tipo) {  //incompleto
         Carta ultimaCarta = getTopeDePozo();
 
-        // Verificar si la carta en el pozo es del mismo tipo exacto
-        boolean tipoCorrecto = ultimaCarta.getClass().equals(tipo);
-
-        // Caso si es una carta numerada
-        if (tipoCorrecto && tipo.equals(CartaNumerada.class)) {
-            CartaNumerada c = (CartaNumerada) ultimaCarta;
-            boolean colorMatch = c.getColor().equalsIgnoreCase(color);
-            boolean numeroMatch = c.getNumero() == numero;
-            return colorMatch && numeroMatch;
-        }
-
-        // Caso comodin
-        else if (tipoCorrecto && tipo.equals(Comodin.class)) {
-            return true;
-        }
-
-        // Caso cartas especiales
-        else { 
-            return tipoCorrecto &&    
-        }
+        return;
     }
-*/
 }
 
 
