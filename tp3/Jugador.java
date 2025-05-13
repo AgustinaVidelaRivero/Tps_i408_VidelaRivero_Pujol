@@ -1,0 +1,32 @@
+import java.util.ArrayList;
+import java.util.List;
+
+import Juego;
+
+
+public class Jugador {
+    private String nombre;
+    private List<Carta> mano = new ArrayList<>();
+
+    public Jugador(String nombre) {
+        this.nombre = nombre;
+        this.mano = Juego.darManoInicial();   
+    }
+
+    public boolean tieneCarta(Carta carta) {
+    return mano.contains(carta);
+    }
+
+    public boolean puedeJugar(Carta carta, Carta cartaEnJuego) {        //cartaEnJuego es la de arriba del pozo
+        return carta.esJugableSobre(cartaEnJuego);
+    }
+
+    public void quitarCarta(Carta carta) {
+        mano.remove(carta);
+    }
+
+    public void agarrarCarta(Carta carta) {
+        mano.add(carta);
+    }
+
+}
