@@ -21,7 +21,7 @@ no usar map --> osea no usamos instancias de cartas ni nada, simplemente objetos
 emilio: si resulta que tengo dos rojo2 en mi mano, lo que tengo es asociado al jugador dos objetos correspondientes a la carta rojo2, mas las otras cartas que pueda tener.
 Al momento de jugar, le digo al juego que juego la carta rojo2, pasándole un tercer objeto representando la carta Rojo 2 indistinguible de los dos objetos que tengo en mi mano representando el mismo concepto.
 Para testear, deben pensarlo mejor, no esta bien exponer el jugador ni las cartas que tiene el jugador a través del juego.
-Una forma es verificar que la carta en el tope del pozo ahora es decolor rojo y numero 2, una segunda confirmación es que el juego falla si en la siguiente ronda quiero jugar nuevamente la misma carta ( en el caso de que no la tubiera repetida).
+Una forma es verificar que la carta en el tope del pozo ahora es decolor rojo y numero 2, una segunda confirmación es que el juego falla si en la siguiente ronda quiero jugar nuevamente la misma carta ( en el caso de que no la tuviera repetida).
 tienen que encontrar la forma de verificar el juego sin exponer las decisiones o estructura interna.
 
 pozo (stack)
@@ -34,3 +34,8 @@ pueden hacer todos los tests sin la necesidad de agotar un mazo, con lo cual pue
 
 Los jugadores no se exponen en los tests, es algo interno al juego, los test son sobre el juego.
 --> tenemos que testear jugando, no preguntandole cosas a los objetos
+
+Mazo: 
+
+108 cartas: 19 cartas azules de 0 a 9, 19 cartas rojas de 0 a 9, 19 cartas verdes de 0 a 9, 19 cartas amarillas de 0 a 9, 
+8 cartas MasDos (dos de cada color), 8 cartas Reversa (dos de cada color), 8 cartas Saltea (dos de cada color), 4 cartas Comodin.
