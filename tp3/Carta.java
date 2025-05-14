@@ -21,13 +21,18 @@ public class CartaNumerada extends Carta {
     public int getNumero() { return numero; }
 }
 
-public class Comodin extends Carta {     //acepta todos los numeros y colores y tipos
+public class Comodin extends Carta {     
+    private String color;
 
     public boolean esJugableSobre(String color, int numero, Class<? extends Carta> tipoEnPozo) {
         return true;
     }
 
-    public String getColor() { return null; }
+    public boolean jugar(String color) {    //solo cuando la jugamos le asignamos el color 
+        this.color = color;
+    }
+
+    public String getColor() { return color; }
     public int getNumero() { return -1; }
 }
 

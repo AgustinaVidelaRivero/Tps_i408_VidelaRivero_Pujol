@@ -39,3 +39,15 @@ Mazo:
 
 108 cartas: 19 cartas azules de 0 a 9, 19 cartas rojas de 0 a 9, 19 cartas verdes de 0 a 9, 19 cartas amarillas de 0 a 9, 
 8 cartas MasDos (dos de cada color), 8 cartas Reversa (dos de cada color), 8 cartas Saltea (dos de cada color), 4 cartas Comodin.
+
+
+
+- a una wildcard no tiene sentido preguntarle su color hasta que no es jugada.
+- una wildcard jugada restringe el color que se le puede apoyar arriba porque tiene un color asignado.
+- a una wildcard le viene bien apoyarse arriba de cualquier color.
+
+En ese sentido el color de la carta a la vista en el caso de las wildcards es el color cantado para esa carta.
+Dicho de nuevo de otra manera wildcard no tiene color, pero sabe responder el mensaje color(), y responde su color asignado.
+
+El test me suena conocido :), y tiene sentido. ahora game.colorOnTop() es una proyeccion directa del color de la carta a la vista.
+Vale aclarar que no tiene sentido preguntarle el numeroOnTop luego de jugar un wildcard, un reverse, un +2, etc.
