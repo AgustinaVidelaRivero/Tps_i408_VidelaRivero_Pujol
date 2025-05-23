@@ -75,10 +75,6 @@ public class Juego {
         }
 
         carta.aplicarEfecto(this, jugadorActual);
-
-        if (jugadorActual.sinCartas()) {
-            System.out.println("¡El jugador " + jugadorActual.nombre() + " ha ganado el juego!");
-        }
         return this;
     }
 
@@ -154,14 +150,6 @@ public class Juego {
         for (int i = 0; i < cantidad && !pilaDeCartas.isEmpty(); i++) {
             jugador.recibirCarta(pilaDeCartas.removeFirst());
         }
-    }
-
-    public String ganador() {
-        return jugadores.values().stream()
-                .filter(Jugador::sinCartas)
-                .findFirst()
-                .map(Jugador::nombre)
-                .orElse(null);
     }
 }
 
