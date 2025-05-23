@@ -84,44 +84,6 @@ public class Juego {
         }
     }
 
-//    public void jugar(String nombreJugador, Carta carta) {
-//        //esperar a ver si sacamos este primer chequeo segun lo que nos responda emilio
-//        if (termino()) {
-//            throw new RuntimeException("El juego ya terminó. No se pueden jugar más cartas.");
-//        }
-//        //
-//
-//
-//        validarTurno(nombreJugador);
-//
-//        if (carta instanceof CartaWildcard wildcard && wildcard.obtenerColor() == null) {
-//            throw new RuntimeException("Wildcard sin color asignado");
-//        }
-//
-//        if (!jugadorActual.tiene(carta)) {
-//            throw new RuntimeException("El jugador no tiene esa carta");
-//        }
-//
-//        if (!carta.aceptaCarta(cartaDelPozo)) {
-//            throw new RuntimeException("La carta no es compatible con el pozo");
-//        }
-//
-//        jugadorActual.jugarCarta(carta);
-//        cartaDelPozo = carta;
-//
-//        if (jugadorActual.cantidadCartas() == 1 && !carta.cantoUno()) {
-//            for (int i = 0; i < 2 && !pilaDeCartas.isEmpty(); i++) {
-//                jugadorActual.recibirCarta(pilaDeCartas.removeFirst());
-//            }
-//        }
-//
-//        aplicarEfectoDeCarta(carta);
-//    }
-
-//    private void aplicarEfectoDeCarta(Carta carta) {
-//        carta.aplicarEfecto(this, jugadorActual);
-//    }
-
     private void validarTurno(String nombre) {
         if (!jugadorActual.nombre().equals(nombre)) {
             throw new RuntimeException("No es el turno de " + nombre);

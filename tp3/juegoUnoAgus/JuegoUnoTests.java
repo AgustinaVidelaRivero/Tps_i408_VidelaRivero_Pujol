@@ -16,22 +16,22 @@ public class JuegoUnoTests {
 
     @BeforeEach
     public void setup() {
-        rojo2 = cartaNumero("rojo", 2);
-        rojo4 = cartaNumero("rojo", 4);
-        azul2 = cartaNumero("azul", 2);
-        azul4 = cartaNumero("azul", 4);
-        verde4 = cartaNumero("verde", 4);
-        verde5 = cartaNumero("verde", 5);
+        rojo2 = cartaNumero(Color.ROJO, 2);
+        rojo4 = cartaNumero(Color.ROJO, 4);
+        azul2 = cartaNumero(Color.AZUL, 2);
+        azul4 = cartaNumero(Color.AZUL, 4);
+        verde4 = cartaNumero(Color.VERDE, 4);
+        verde5 = cartaNumero(Color.VERDE, 5);
 
-        skipVerde = skip("verde");
-        skipRojo = skip("rojo");
-        skipAzul = skip("azul");
+        skipVerde = skip(Color.VERDE);
+        skipRojo = skip(Color.ROJO);
+        skipAzul = skip(Color.AZUL);
 
-        reverseRojo = reverse("rojo");
-        reverseAzul = reverse("azul");
+        reverseRojo = reverse(Color.ROJO);
+        reverseAzul = reverse(Color.AZUL);
 
-        masDosRojo = masDos("rojo");
-        Carta wildcardRojo = wildcard("rojo");
+        masDosRojo = masDos(Color.ROJO);
+        Carta wildcardRojo = wildcard(Color.ROJO);
 
         List<String> jugadoresABC = List.of("A", "B", "C");
         List<String> jugadoresABCD = List.of("A", "B", "C", "D");
@@ -100,19 +100,7 @@ public class JuegoUnoTests {
         // B no puede jugar azul2, porque el pozo es rojo
         assertThrows(RuntimeException.class, () -> juego.jugar("B", azul2));
     }
-//    @Test public void test06JugadorPuedeJugarWildcardAsignandoColor() {
-//        Juego juego = new Juego(List.of(
-//                CartaComodin.with().asignarColor(Carta.ROJO), // jugador A
-//                azul2,
-//                rojo2
-//        ), 1, "A", "B");
-//
-//        juego.jugar("A", CartaComodin.with().asignarColor(Carta.ROJO));
-//
-//        assertEquals(Carta.ROJO, juego.obtenerCartaDelPozo().obtenerColor());
-//
-//        assertThrows(RuntimeException.class, () -> juego.jugar("B", azul2));
-//    }
+
 
     @Test public void test07NoSePuedeJugarWildcardSinColor() {
         List<Carta> mazo = List.of(
@@ -382,46 +370,27 @@ public class JuegoUnoTests {
         // B intenta jugar luego de terminado el juego
         assertThrows(RuntimeException.class, () -> juego.jugar("B", azul2));
     }
-
-    private Carta cartaNumero(String color, int valor) {
-        return CartaNumerada.with(Color.valueOf(color.toUpperCase()), valor);
+    
+    private Carta cartaNumero(Color color, int valor) {
+        return CartaNumerada.with(color, valor);
     }
 
-    private Carta skip(String color) {
-        return CartaSaltea.with(Color.valueOf(color.toUpperCase()));
+    private Carta skip(Color color) {
+        return CartaSaltea.with(color);
     }
 
-    private Carta reverse(String color) {
-        return CartaReversa.with(Color.valueOf(color.toUpperCase()));
+    private Carta reverse(Color color) {
+        return CartaReversa.with(color);
     }
 
-    private Carta masDos(String color) {
-        return CartaMasDos.with(Color.valueOf(color.toUpperCase()));
+    private Carta masDos(Color color) {
+        return CartaMasDos.with(color);
     }
 
-    private Carta wildcard(String color) {
-        return CartaComodin.with().asignarColor(Color.valueOf(color.toUpperCase()));
+    private Carta wildcard(Color color) {
+        return CartaComodin.with().asignarColor(color);
     }
 
-//    private Carta cartaNumero(String color, int valor) {
-//        return CartaNumerada.with(color.toLowerCase(), valor);
-//    }
-//
-//    private Carta skip(String color) {
-//        return CartaSaltea.with(color.toLowerCase());
-//    }
-//
-//    private Carta reverse(String color) {
-//        return CartaReversa.with(color.toLowerCase());
-//    }
-//
-//    private Carta masDos(String color) {
-//        return CartaMasDos.with(color.toLowerCase());
-//    }
-//
-//    private Carta wildcard(String color) {
-//        return CartaComodin.with().asignarColor(color.toLowerCase());
-//    }
 
 }
 

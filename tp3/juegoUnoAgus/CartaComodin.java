@@ -53,69 +53,7 @@ public class CartaComodin extends Carta {
         return Objects.hash(colorAsignado);
     }
 
-    //NUEVO
     public void aplicarEfecto(Juego juego, Jugador jugadorActual) {
         juego.pasarTurno(jugadorActual);
     }
 }
-
-//public class CartaComodin extends Carta {
-//    private String colorAsignado;
-//
-//    private CartaComodin() {}
-//
-//    public static CartaComodin with() {
-//        return new CartaComodin();
-//    }
-//
-//    public CartaComodin asignarColor(String color) {
-//        if (color == null || color.isEmpty()) {
-//            throw new IllegalArgumentException("Color no válido");
-//        }
-//        this.colorAsignado = color.toLowerCase();
-//        return this;
-//    }
-//
-//    @Override
-//    public boolean aceptaCarta(Carta otra) {
-//        return true; // siempre se puede jugar una comodín
-//    }
-//
-//    @Override
-//    public boolean teGustaMiColor(String otroColor) {
-//        return colorAsignado != null && colorAsignado.equalsIgnoreCase(otroColor);
-//    }
-//
-//    @Override
-//    public boolean somosDelMismoTipo(String tipo) {
-//        return "CartaComodin".equals(tipo);
-//    }
-//
-//    @Override
-//    public String obtenerColor() {
-//        if (colorAsignado == null) {
-//            throw new RuntimeException("La carta comodín no tiene color asignado");
-//        }
-//        return colorAsignado;
-//    }
-//
-//    public void aplicarEfecto(Juego juego, Jugador jugadorActual) {
-//        juego.pasarTurno(jugadorActual);
-//    }
-//
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof CartaComodin)) return false;
-//        CartaComodin that = (CartaComodin) o;
-//        return colorAsignado != null && that.colorAsignado != null &&
-//                colorAsignado.equalsIgnoreCase(that.colorAsignado);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return colorAsignado == null ? 0 : colorAsignado.toLowerCase().hashCode();
-//    }
-//}
-
-

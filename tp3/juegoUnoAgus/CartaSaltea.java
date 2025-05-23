@@ -50,70 +50,8 @@ public class CartaSaltea extends Carta {
         return Objects.hash(color);
     }
 
-    //NUEVO
     public void aplicarEfecto(Juego juego, Jugador jugadorActual) {
         juego.saltarSiguienteJugador(jugadorActual);
     }
 
 }
-
-//public class CartaSaltea extends Carta {
-//    private final String color;
-//
-//    private CartaSaltea(String color) {
-//        this.color = color.toLowerCase();
-//    }
-//
-//    public static CartaSaltea with(String color) {
-//        return new CartaSaltea(color);
-//    }
-//
-//    @Override
-//    public boolean aceptaCarta(Carta otra) {
-//        return otra.teGustaMiColor(color) || otra.somosDelMismoTipo("CartaSaltea");
-//    }
-//
-//    @Override
-//    public boolean teGustaMiColor(String otroColor) {
-//        return this.color.equalsIgnoreCase(otroColor);
-//    }
-//
-//    @Override
-//    public boolean somosDelMismoTipo(String tipo) {
-//        return "CartaSaltea".equals(tipo);
-//    }
-//
-//    @Override
-//    public String obtenerColor() {
-//        return color;
-//    }
-//
-//    public void aplicarEfecto(Juego juego, Jugador jugadorActual) {
-//        juego.saltarSiguienteJugador(jugadorActual);
-//    }
-//
-////    @Override
-////    public boolean equals(Object o) {
-////        if (this == o) return true;
-////        if (!(o instanceof CartaSaltea)) return false;
-////        CartaSaltea that = (CartaSaltea) o;
-////        return color.equals(that.color);
-////    }
-////
-////    @Override
-////    public int hashCode() {
-////        return Objects.hash(color);
-////    }
-//
-//    public boolean equals(Object obj) {
-//        if (!(obj instanceof CartaSaltea otra)) return false;
-//        return Objects.equals(this.color, otra.color);
-//        }
-//
-//    public int hashCode() {
-//
-//        return Objects.hash(color);
-//    }
-//}
-
-
