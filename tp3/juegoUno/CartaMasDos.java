@@ -1,21 +1,20 @@
-package juegoUnoAgus;
-
+package juegoUno;
 
 import java.util.Objects;
 
-public class CartaSaltea extends Carta {
+public class CartaMasDos extends Carta {
     private final String color;
-    private static final String TIPO = "Saltea";
+    private static final String TIPO = "MasDos";
 
-    private CartaSaltea(String color) {
+    private CartaMasDos(String color) {
         if (!esColorValido(color)) {
             throw new IllegalArgumentException("Color inválido: " + color);
         }
         this.color = color;
     }
 
-    public static CartaSaltea with(String color) {
-        return new CartaSaltea(color);
+    public static CartaMasDos with(String color) {
+        return new CartaMasDos(color);
     }
 
     private boolean esColorValido(String color) {
@@ -43,11 +42,11 @@ public class CartaSaltea extends Carta {
     }
 
     public int obtenerNumero() {
-        throw new UnsupportedOperationException("La carta Skip no tiene número");
+        throw new UnsupportedOperationException("La carta MasDos no tiene número");
     }
 
     public boolean equals(Object obj) {
-        if (!(obj instanceof CartaSaltea otra)) return false;
+        if (!(obj instanceof CartaMasDos otra)) return false;
         return this.color.equals(otra.color);
     }
 
@@ -56,6 +55,8 @@ public class CartaSaltea extends Carta {
     }
 
     public void aplicarEfecto(Juego juego, Jugador jugadorActual) {
+        Jugador siguiente = juego.obtenerSiguienteJugador(jugadorActual);
+        juego.robarCartas(siguiente, 2);
         juego.saltarSiguienteJugador(jugadorActual);
     }
 }

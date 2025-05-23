@@ -1,34 +1,66 @@
-//package juegoUno;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//
-//public class Jugador {
-//    private String nombre;
-//    private List<Carta> mano = new ArrayList<>();
-//
-//    public Jugador(String nombre, List<Carta> mano) {
-//        this.nombre = nombre;
-//        this.mano = mano;
-//    }
-//
-//    public boolean tieneCarta(Carta carta) {
-//        return mano.contains(carta);
-//    }
-//
-//    public boolean puedeJugar(Carta carta, Carta cartaEnJuego) {        //cartaEnJuego es la de arriba del pozo
-//        String color = cartaEnJuego.getColor();
-//        int numero = cartaEnJuego.getNumero();
-//        Class<? extends Carta> tipoEnPozo = cartaEnJuego.getClass();
-//        return carta.esJugableSobre(color, numero, tipoEnPozo);
-//    }
-//
-//    public void quitarCarta(Carta carta) {
-//        mano.remove(carta);
-//    }
-//
-//    public void agarrarCarta(Carta carta) {
-//        mano.add(carta);
-//    }
-//}
+package juegoUno;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Jugador {
+    private final String nombre;
+    private Jugador derecha;
+    private Jugador izquierda;
+    private final List<Carta> cartas;
+
+    public Jugador(String nombre) {
+        this.nombre = nombre;
+        this.cartas = new ArrayList<>();
+    }
+
+    public String nombre() {
+        return nombre;
+    }
+
+    public void setDerecha(Jugador jugador) {
+        this.derecha = jugador;
+    }
+
+    public void setIzquierda(Jugador jugador) {
+        this.izquierda = jugador;
+    }
+
+    public Jugador derecha() {
+        return derecha;
+    }
+
+    public Jugador izquierda() {
+        return izquierda;
+    }
+
+    public void recibirCarta(Carta carta) {
+        cartas.add(carta);
+    }
+
+    public void jugarCarta(Carta carta) {
+        cartas.remove(carta);
+    }
+
+    public boolean tiene(Carta carta) {
+        return cartas.contains(carta);
+    }
+
+    public boolean sinCartas() {
+        return cartas.isEmpty();
+    }
+
+    public int cantidadCartas() {
+        return cartas.size();
+    }
+
+    public boolean tieneAlMenosUnaCartaJugable(Carta cartaDelPozo) {
+        for (Carta carta : this.cartas) {
+            if (carta.aceptaCarta(cartaDelPozo)) return true;
+        }
+        return false;
+    }
+
+}
+
+

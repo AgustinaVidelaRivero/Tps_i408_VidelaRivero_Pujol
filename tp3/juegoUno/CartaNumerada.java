@@ -1,4 +1,4 @@
-package juegoUnoAgus;
+package juegoUno;
 
 import java.util.Objects;
 

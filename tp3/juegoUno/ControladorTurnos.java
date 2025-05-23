@@ -1,4 +1,4 @@
-package juegoUnoAgus;
+package juegoUno;
 
 public abstract class ControladorTurnos {
     protected ControladorTurnos opuesto;
