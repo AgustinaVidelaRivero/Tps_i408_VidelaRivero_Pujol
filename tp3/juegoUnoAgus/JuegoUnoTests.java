@@ -13,193 +13,145 @@ public class JuegoUnoTests {
     private Carta skipRojo;
     private Carta skipAzul;
     private Carta masDosRojo;
+    private Carta comodinSinColor;
+    private Carta comodinRojo;
 
     @BeforeEach
     public void setup() {
-        rojo2 = cartaNumero(Color.ROJO, 2);
-        rojo4 = cartaNumero(Color.ROJO, 4);
-        azul2 = cartaNumero(Color.AZUL, 2);
-        azul4 = cartaNumero(Color.AZUL, 4);
-        verde4 = cartaNumero(Color.VERDE, 4);
-        verde5 = cartaNumero(Color.VERDE, 5);
+        rojo2 = cartaNumero(Carta.ROJO, 2);
+        rojo4 = cartaNumero(Carta.ROJO, 4);
+        azul2 = cartaNumero(Carta.AZUL, 2);
+        azul4 = cartaNumero(Carta.AZUL, 4);
+        verde4 = cartaNumero(Carta.VERDE, 4);
+        verde5 = cartaNumero(Carta.VERDE, 5);
 
-        skipVerde = skip(Color.VERDE);
-        skipRojo = skip(Color.ROJO);
-        skipAzul = skip(Color.AZUL);
+        skipVerde = skip(Carta.VERDE);
+        skipRojo = skip(Carta.ROJO);
+        skipAzul = skip(Carta.AZUL);
 
-        reverseRojo = reverse(Color.ROJO);
-        reverseAzul = reverse(Color.AZUL);
+        reverseRojo = reverse(Carta.ROJO);
+        reverseAzul = reverse(Carta.AZUL);
 
-        masDosRojo = masDos(Color.ROJO);
-        Carta wildcardRojo = wildcard(Color.ROJO);
+        masDosRojo = masDos(Carta.ROJO);
 
-        List<String> jugadoresABC = List.of("A", "B", "C");
-        List<String> jugadoresABCD = List.of("A", "B", "C", "D");
+
+        comodinRojo = wildcard(Carta.ROJO);
+        comodinSinColor = CartaComodin.with();
     }
 
     @Test
     public void test01PozoInicialTieneLaCartaCorrecta() {
-        List<Carta> mazo = List.of(rojo2, azul2, verde4, rojo4, rojo4);
-        Juego juego = new Juego(mazo, 2, "A", "B");
-
-        assertEquals(rojo4, juego.obtenerCartaDelPozo());
+        assertEquals(rojo4,
+                new Juego(List.of(rojo2, azul2, verde4, rojo4, rojo4), 2, "A", "B").obtenerCartaDelPozo());
     }
 
-    @Test
-    public void test02JugadorPuedeJugarCartaPorColor() {
-        List<Carta> mazo = List.of(rojo2, rojo4, azul2, verde4, rojo2);
-        Juego juego = new Juego(mazo, 2, "A", "B");
-
-        juego.jugar("A", rojo2);
-        assertEquals(rojo2, juego.obtenerCartaDelPozo());
+    @Test public void test02JugadorPuedeJugarCartaPorColor() {
+        assertEquals(rojo2,
+                        new Juego(List.of(rojo2, rojo4, azul2, verde4, rojo2), 2, "A", "B")
+                                .jugar("A", rojo2).obtenerCartaDelPozo());
     }
 
 
     @Test public void test03JugadorNoPuedeJugarCartaIncompatible() {
-        List<Carta> mazo = List.of(
-                azul2,                       // A recibe esta
-                //CartaNumerada.with(Color.VERDE, 5), // B recibe esta
-                verde5,
-                rojo4                        // esta va al pozo
-        );
-        Juego juego = new Juego(mazo, 1, "A", "B");
-        assertThrows(RuntimeException.class, () -> juego.jugar("A", azul2));
+        assertThrows(RuntimeException.class,
+                () -> new Juego(List.of(
+                                        azul2,                       // A recibe esta
+                                        verde5,
+                                        rojo4 )                       // esta va al pozo
+                                , 1, "A", "B").jugar("A", azul2));
     }
 
     @Test public void test04JugadorPuedeJugarCartaPorNumero() {
-        List<Carta> mazo = List.of(azul2, rojo4, verde4, rojo2, rojo2);
-        Juego juego = new Juego(mazo, 2, "A", "B");
-
-        juego.jugar("A", azul2);
-        assertEquals(azul2, juego.obtenerCartaDelPozo());
+        assertEquals(azul2,
+                        new Juego(List.of(azul2, rojo4, verde4, rojo2, rojo2), 2, "A", "B")
+                                .jugar("A", azul2).obtenerCartaDelPozo());
     }
 
     @Test public void test05JugadorNoPuedeRepetirLaMismaCarta() {
-        Carta r4a = rojo4;
-        Carta r4b = rojo4;
-        List<Carta> mazo = List.of(r4a, r4b, azul2, verde4, rojo2);
-        Juego juego = new Juego(mazo, 2, "A", "B");
-
-        juego.jugar("A", r4a);
-        assertEquals(r4a, juego.obtenerCartaDelPozo());
-
-        assertThrows(RuntimeException.class, () -> juego.jugar("A", r4a));
+        Juego juego = new Juego(List.of(rojo4, rojo4, azul2, verde4, rojo2), 2, "A", "B");
+        juego.jugar("A", rojo4);
+        assertEquals(rojo4, juego.obtenerCartaDelPozo());
+        assertThrows(RuntimeException.class, () -> juego.jugar("A", rojo4));
     }
 
     @Test public void test06JugadorPuedeJugarWildcardAsignandoColor() {
         Juego juego = new Juego(List.of(
-                CartaComodin.with().asignarColor(Color.ROJO),    // jugador A recibe esta wildcard ya asignada como roja
-                azul2,     // jugador B
+                comodinRojo, // recibe comodin  asignado como rojo
+                azul2,
                 rojo2      // carta inicial del pozo
         ), 1, "A", "B");
 
-        juego.jugar("A", CartaComodin.with().asignarColor(Color.ROJO));
-
-        assertEquals(Color.ROJO, juego.obtenerCartaDelPozo().obtenerColor());
-
+        juego.jugar("A", CartaComodin.with().asignarColor(Carta.ROJO));
+        assertEquals(Carta.ROJO, juego.obtenerCartaDelPozo().obtenerColor());
         // B no puede jugar azul2, porque el pozo es rojo
         assertThrows(RuntimeException.class, () -> juego.jugar("B", azul2));
     }
 
-
     @Test public void test07NoSePuedeJugarWildcardSinColor() {
-        List<Carta> mazo = List.of(
-                CartaComodin.with(),
+        Juego juego = new Juego(List.of(
+                comodinSinColor,
                 azul2,
                 rojo2
-        );
-
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
+        ), 1, "A", "B");
         // Al no tener color, debe lanzar excepción al intentar jugarla
-        assertThrows(RuntimeException.class, () -> juego.jugar("A", CartaComodin.with()));
+        assertThrows(RuntimeException.class, () -> juego.jugar("A", comodinSinColor));
     }
 
     @Test public void test08JugadorPuedeApoyarMasDosSobreMismoTipoODelMismoColor() {
-        List<Carta> mazo = List.of(
+        Juego juego = new Juego(List.of(
                 masDosRojo,  // jugador A
                 verde4,      // jugador B
                 rojo2        // pozo inicial
-        );
-
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
+        ), 1, "A", "B");
         // A juega +2 rojo sobre rojo2 (por color)
         juego.jugar("A", masDosRojo);
         assertEquals(masDosRojo, juego.obtenerCartaDelPozo());
-
         // B no puede jugar verde4 (ni tipo ni color)
         assertThrows(RuntimeException.class, () -> juego.jugar("B", verde4));
     }
 
     @Test public void test09NoSePuedeApoyarCartaNormalSobreMasDosIncompatible() {
-        List<Carta> mazo = List.of(
+        assertThrows(RuntimeException.class, () -> new Juego(List.of(
                 azul4, //A
                 rojo2,//B
                 masDosRojo
-        );
-
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
-        // A intenta jugar azul4 sobre +2 rojo, pero no coincide en tipo ni color
-        assertThrows(RuntimeException.class, () -> juego.jugar("A", azul4));
+        ), 1, "A", "B").jugar("A", azul4));
     }
 
     @Test public void test10JugadorPuedeApoyarReversePorColor() {
-        List<Carta> mazo = List.of(
-                reverseRojo,   // jugador A
-                azul2,         // jugador B
-                rojo2          // pozo inicial
-        );
-
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
-        juego.jugar("A", reverseRojo);
-        assertEquals(reverseRojo, juego.obtenerCartaDelPozo());
+        assertEquals(reverseRojo, new Juego(List.of(
+                                                    reverseRojo,   // jugador A
+                                                    azul2,         // jugador B
+                                                    rojo2 )         // pozo inicial
+        , 1, "A", "B").jugar("A", reverseRojo).obtenerCartaDelPozo());
     }
 
     @Test public void test11JugadorNoPuedeApoyarReverseIncompatible() {
-        List<Carta> mazo = List.of(
+        assertThrows(RuntimeException.class, () -> new Juego(List.of(
                 reverseAzul,  // jugador A
-                rojo2,        // jugador B
+                rojo2,        //  B
                 verde4        // pozo inicial
-        );
-
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
-        // Reverse azul no coincide ni en color ni en tipo con verde4
-        assertThrows(RuntimeException.class, () -> juego.jugar("A", reverseAzul));
+        ), 1, "A", "B").jugar("A", reverseAzul));
     }
 
-    @Test
-    public void test12JugadorPuedeApoyarSkipPorColor() {
-        List<Carta> mazo = List.of(
-                skipRojo,
-                azul2,
-                rojo2
-        );
-
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
-        juego.jugar("A", skipRojo);
-        assertEquals(skipRojo, juego.obtenerCartaDelPozo());
+    @Test public void test12JugadorPuedeApoyarSkipPorColor() {
+        assertEquals(skipRojo, new Juego(List.of(
+                                                skipRojo,
+                                                azul2,
+                                                rojo2),
+                1, "A", "B").jugar("A", skipRojo).obtenerCartaDelPozo());
     }
 
     @Test public void test13JugadorNoPuedeApoyarSkipIncompatible() {
-        List<Carta> mazo = List.of(
+        assertThrows(RuntimeException.class, () -> new Juego(List.of(
                 skipAzul,
                 rojo2,
                 verde4
-        );
-
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
-        // Skip azul no coincide ni en color ni en tipo con verde4
-        assertThrows(RuntimeException.class, () -> juego.jugar("A", skipAzul));
+        ), 1, "A", "B").jugar("A", skipAzul));
     }
 
     @Test public void test14ReverseConTresJugadoresInvierteElSentido() {
-        List<Carta> mazo = List.of(
+        Juego juego = new Juego(List.of(
                 reverseRojo, //A
                 rojo2,  //B
                 azul2, //C
@@ -207,9 +159,7 @@ public class JuegoUnoTests {
                 rojo2, //B
                 rojo2,    //C
                 rojo4, rojo2, rojo2 //POZO
-        );
-        Juego juego = new Juego(mazo, 2, "A", "B", "C");
-
+        ), 2, "A", "B", "C");
         juego.jugar("A", reverseRojo);
         juego.jugar("C", rojo2);
 
@@ -217,177 +167,137 @@ public class JuegoUnoTests {
     }
 
     @Test public void test14ReverseConCuatroJugadoresSaltaCorrectamente() {
-        List<Carta> mazo = List.of(
-                reverseRojo, //A
-                rojo2,   // B
-                rojo2, //C
-                rojo2,         // D
-                rojo2, //A
-                rojo2,         // B
-                rojo2, //C
-                rojo2,         // D
-                rojo4 //POZO
-        );
-        Juego juego = new Juego(mazo, 2, "A", "B", "C", "D");
-
-        juego.jugar("A", reverseRojo);
-        juego.jugar("D", rojo2);
-
-        assertEquals(rojo2, juego.obtenerCartaDelPozo());
+        assertEquals(rojo2,  new Juego(List.of(reverseRojo, //A
+                                                rojo2,   // B
+                                                rojo2, //C
+                                                rojo2,         // D
+                                                rojo2, //A
+                                                rojo2,         // B
+                                                rojo2, //C
+                                                rojo2,         // D
+                                                rojo4), //POZO
+                                                     2, "A", "B", "C", "D")
+                .jugar("A", reverseRojo)
+                .jugar("D", rojo2)
+                .obtenerCartaDelPozo());
     }
 
     @Test public void test15SkipConTresJugadoresSaltaJugadorSiguiente() {
-        List<Carta> mazo = List.of(
-                skipVerde, //A
-                rojo2,     // B
-                azul2, //C
-                rojo2,         // A
-                verde4, //B
-                verde5,        // C
-                verde5 //POZO
-        );
-        Juego juego = new Juego(mazo, 2, "A", "B", "C");
-
-        juego.jugar("A", skipVerde); // B salteado
-        juego.jugar("C", verde5);
-
-        assertEquals(verde5, juego.obtenerCartaDelPozo());
+        assertEquals(verde5,  new Juego(List.of(skipVerde, //A
+                                                rojo2,     // B
+                                                azul2, //C
+                                                rojo2,         // A
+                                                verde4, //B
+                                                verde5,        // C
+                                                verde5), //POZO
+                                 2, "A", "B", "C")
+                                        .jugar("A", skipVerde)
+                                        .jugar("C", verde5)
+                                        .obtenerCartaDelPozo()); // B salteado
     }
 
-    @Test
-    public void test16JugadorRecibePenalidadPorNoCantarUno() {
-
-
-        List<Carta> mazo = List.of(
-                rojo2, azul2,     // A: c0, B: c1
-                rojo2, verde4,  // A: c2, B: c3
-                rojo4, verde4, azul2    // c4 → pozo (rojo4), c5 extra
-        );
-
-        Juego juego = new Juego(mazo, 2, "A", "B");
-
-        juego.jugar("A", rojo2); // le queda una sola carta y no cantó UNO
-
-        assertEquals(3, juego.cantidadCartas("A"));
+    @Test public void test16JugadorRecibePenalidadPorNoCantarUno() {
+        assertEquals(3, new Juego(List.of(rojo2, //A
+                                                    azul2,   //B
+                                                    rojo2, //A
+                                                    verde4,  //B
+                                                    rojo4, verde4, azul2), //POZO
+                                            2, "A", "B")
+                                            .jugar("A", rojo2)
+                                            .cantidadCartas("A"));
     }
 
-    @Test
-    public void test17JugadorCantaUnoYNoRecibePenalidad() {
-
-
-        List<Carta> mazo = List.of(
-                rojo2.uno(), azul2,  // jugador A: rojo2a, azul2
-                rojo2, rojo4,  // jugador B: rojo2b, rojo4
-                rojo4, verde4 // cartas extra
-        );
-
-        Juego juego = new Juego(mazo, 2, "A", "B");
-
-        juego.jugar("A", rojo2.uno());
-
-        assertEquals(1, juego.cantidadCartas("A"));
+    @Test public void test17JugadorCantaUnoYNoRecibePenalidad() {
+        assertEquals(1, new Juego(List.of(rojo2.uno(), //A
+                                                    azul2,  //B
+                                                    rojo2, //A
+                                                    rojo4,  //B
+                                                    rojo4, verde4), //POZO
+         2, "A", "B").jugar("A", rojo2.uno()).cantidadCartas("A"));
     }
 
     @Test public void test18JugadorLevantaCartaYNoPuedeJugarla() {
-        List<Carta> mazo = List.of(
-                azul4, verde4,        // A: cartas no compatibles
-                rojo2, rojo2,     // B: cualquiera
-                rojo4,                // pozo inicial (rojo)
-                azul2                 // carta que roba A (incompatible con pozo rojo4)
-        );
 
-        Juego juego = new Juego(mazo, 2, "A", "B");
-
+        Juego juego = new Juego(List.of(
+                azul4, verde4,
+                rojo2, rojo2,
+                verde5,                // pozo inicial
+                azul2                 // carta que roba A
+        ), 2, "A", "B");
         juego.levantaCarta("A");
-
         // A debe tener 3 cartas ahora
         assertEquals(3, juego.cantidadCartas("A"));
-
         // Pozo sigue siendo rojo4
-        assertEquals(rojo4, juego.obtenerCartaDelPozo());
+        assertEquals(verde5, juego.obtenerCartaDelPozo());
     }
 
     @Test public void test19JugadorLevantaCartaYPuedeJugarla() {
-
-        List<Carta> mazo = List.of(
-                azul4, verde4,        // A: cartas no compatibles
-                rojo2, rojo2,     // B: cualquiera
-                azul2,                // carta que roba A (sí compatible con pozo azul4)
-                azul4                 // pozo inicial (azul4)
-        );
-
-        Juego juego = new Juego(mazo, 2, "A", "B");
-
+        Juego juego = new Juego(List.of(
+                azul4, //A
+                verde4,  //B
+                rojo2, //A
+                verde5,  // B
+                verde5,          // carta del pozo
+                verde5          // esta se roba
+        ), 2, "A", "B");
         juego.levantaCarta("A");
-
-        // A jugó la carta robada, por lo tanto sigue con 2
+        // A robó verde5 y la jugó (compatible con rojo2), así que vuelve a tener 2
         assertEquals(2, juego.cantidadCartas("A"));
-
-        // Pozo debe actualizarse a azul4 --> la que levanto y tiro A
-        assertEquals(azul4, juego.obtenerCartaDelPozo());
+        assertEquals(verde5, juego.obtenerCartaDelPozo());
     }
 
     //NO SE SI HACE FALTA HACER ESTO, pero seria para jugar con un mazo real haciendo:
     //Juego juego = new Juego(MazoFactory.generarMazoCompleto(), 7, "A", "B"); por ejemplo
-    @Test
-    public void test20CantidadCartasEnMazoCompleto() {
+    @Test public void test20CantidadCartasEnMazoCompleto() {
         List<Carta> mazo = MazoReal.generarMazoCompleto();
         assertEquals(104, mazo.size()); // no implementamos las wildcard con +4
     }
 
-    @Test
-    public void test21JugadorGanaCuandoSeQuedaSinCartas() {
-        List<Carta> mazo = List.of(
-                rojo2, // A
-                azul2,     // B
-                rojo4      // pozo
-        );
-
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
+    @Test public void test21JugadorGanaCuandoSeQuedaSinCartas() {
+        Juego juego = new Juego(List.of(
+                                        rojo2, // A
+                                        azul2,     // B
+                                        rojo4      // pozo
+        ), 1, "A", "B");
         juego.jugar("A", rojo2);
-
         assertTrue(juego.termino());
         assertEquals("A", juego.ganador());
     }
 
     //VER SI DEJAMOS ESTO SEGUN LO QUE RESPONDA EMILIO
-    @Test
-    public void testNoSePuedeJugarLuegoDeTerminadoElJuego() {
-        List<Carta> mazo = List.of(
-                rojo2, // A
-                azul2,     // B
-                rojo4      // pozo
-        );
+    @Test public void testNoSePuedeJugarLuegoDeTerminadoElJuego() {
 
-        Juego juego = new Juego(mazo, 1, "A", "B");
-
+        Juego juego = new Juego(List.of(
+                                        rojo2, // A
+                                        azul2,     // B
+                                        rojo4      // pozo
+        ), 1, "A", "B");
         juego.jugar("A", rojo2); // A gana
 
         assertTrue(juego.termino());
         assertEquals("A", juego.ganador());
-
         // B intenta jugar luego de terminado el juego
         assertThrows(RuntimeException.class, () -> juego.jugar("B", azul2));
     }
-    
-    private Carta cartaNumero(Color color, int valor) {
+
+
+    private Carta cartaNumero(String color, int valor) {
         return CartaNumerada.with(color, valor);
     }
 
-    private Carta skip(Color color) {
+    private Carta skip(String color) {
         return CartaSaltea.with(color);
     }
 
-    private Carta reverse(Color color) {
+    private Carta reverse(String color) {
         return CartaReversa.with(color);
     }
 
-    private Carta masDos(Color color) {
+    private Carta masDos(String color) {
         return CartaMasDos.with(color);
     }
 
-    private Carta wildcard(Color color) {
+    private Carta wildcard(String color) {
         return CartaComodin.with().asignarColor(color);
     }
 

@@ -55,6 +55,14 @@ public class Jugador {
     public int cantidadCartas() {
         return cartas.size();
     }
+
+    public boolean tieneAlMenosUnaCartaJugable(Carta cartaDelPozo) {
+        for (Carta carta : this.cartas) {
+            if (carta.aceptaCarta(cartaDelPozo)) return true;
+        }
+        return false;
+    }
+
 }
 
 

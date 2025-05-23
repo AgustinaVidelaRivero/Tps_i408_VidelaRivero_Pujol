@@ -1,57 +1,54 @@
 package juegoUnoAgus;
 
-
 import java.util.Objects;
 
 public class CartaNumerada extends Carta {
-    private final Color color;
+    private final String color;
     private final int numero;
+    private static final String TIPO = "CartaNumero";
 
-    private CartaNumerada(Color color, int numero) {
+    private CartaNumerada(String color, int numero) {
+        if (!esColorValido(color)) throw new IllegalArgumentException("Color inválido: " + color);
+        if (numero < 0 || numero > 9) throw new IllegalArgumentException("Número inválido: " + numero);
         this.color = color;
         this.numero = numero;
     }
 
-
-    public static CartaNumerada with(Color color, int numero) {
-        if (color == null) throw new IllegalArgumentException("Color no puede ser null");
-        if (numero < 0 || numero > 9) throw new IllegalArgumentException("Número inválido: " + numero);
+    public static CartaNumerada with(String color, int numero) {
         return new CartaNumerada(color, numero);
     }
 
-
-    public boolean teGustaMiColor(Color otroColor) {
-        return this.color.equals(otroColor);
+    private boolean esColorValido(String color) {
+        return ROJO.equals(color) || AZUL.equals(color) || VERDE.equals(color) || AMARILLO.equals(color);
     }
 
+    public boolean teGustaMiColor(String otroColor) {
+        return this.color.equals(otroColor);
+    }
 
     public boolean teGustaMiNumero(int otroNumero) {
         return this.numero == otroNumero;
     }
 
     public boolean somosDelMismoTipo(String tipo) {
-        return "CartaNumero".equals(tipo);
+        return TIPO.equals(tipo);
     }
 
     public boolean aceptaCarta(Carta otra) {
         return otra.teGustaMiColor(this.color) || otra.teGustaMiNumero(this.numero);
     }
 
-    public Color obtenerColor() {
+    public String obtenerColor() {
         return color;
     }
-
 
     public int obtenerNumero() {
         return numero;
     }
 
-
     public boolean equals(Object obj) {
-        if (!(obj instanceof CartaNumerada)) return false;
-        CartaNumerada otra = (CartaNumerada) obj;
-        return this.obtenerColor().equals(otra.obtenerColor()) &&
-                this.obtenerNumero() == otra.obtenerNumero();
+        if (!(obj instanceof CartaNumerada otra)) return false;
+        return this.color.equals(otra.color) && this.numero == otra.numero;
     }
 
     public int hashCode() {

@@ -8,7 +8,9 @@ public class MazoReal {
     public static List<Carta> generarMazoCompleto() {
         List<Carta> mazo = new ArrayList<>();
 
-        for (Color color : Color.values()) {
+        List<String> colores = List.of(Carta.ROJO, Carta.AZUL, Carta.VERDE, Carta.AMARILLO);
+
+        for (String color : colores) {
             // 1 carta 0
             mazo.add(CartaNumerada.with(color, 0));
 
@@ -27,7 +29,7 @@ public class MazoReal {
             mazo.add(CartaMasDos.with(color));
         }
 
-        // 4 Wildcards (solo las normales, no +4)
+        // 4 Wildcards
         for (int i = 0; i < 4; i++) {
             mazo.add(CartaComodin.with());
         }
@@ -36,4 +38,3 @@ public class MazoReal {
         return mazo;
     }
 }
-

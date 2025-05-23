@@ -1,10 +1,10 @@
 package juegoUnoAgus;
 
-
 import java.util.Objects;
 
 public class CartaComodin extends Carta {
-    private Color colorAsignado;
+    private String colorAsignado;
+    private static final String TIPO = "Comodín";
 
     private CartaComodin() {}
 
@@ -12,14 +12,20 @@ public class CartaComodin extends Carta {
         return new CartaComodin();
     }
 
-    public CartaComodin asignarColor(Color color) {
-        if (color == null) throw new IllegalArgumentException("Color no puede ser null");
+    public CartaComodin asignarColor(String color) {
+        if (!esColorValido(color)) {
+            throw new IllegalArgumentException("Color inválido: " + color);
+        }
         this.colorAsignado = color;
         return this;
     }
 
-    public boolean teGustaMiColor(Color color) {
-        return colorAsignado != null && colorAsignado == color;
+    private boolean esColorValido(String color) {
+        return ROJO.equals(color) || AZUL.equals(color) || VERDE.equals(color) || AMARILLO.equals(color);
+    }
+
+    public boolean teGustaMiColor(String color) {
+        return colorAsignado != null && colorAsignado.equals(color);
     }
 
     public boolean teGustaMiNumero(int numero) {
@@ -27,13 +33,14 @@ public class CartaComodin extends Carta {
     }
 
     public boolean somosDelMismoTipo(String tipo) {
-        return "CartaWildcard".equals(tipo);
+        return TIPO.equals(tipo);
     }
 
     public boolean aceptaCarta(Carta otra) {
-        return true;
+        return true; // Siempre puede jugarse
     }
-    public Color obtenerColor() {
+
+    public String obtenerColor() {
         if (colorAsignado == null) {
             throw new RuntimeException("La carta no tiene un color asignado aún");
         }
@@ -54,6 +61,6 @@ public class CartaComodin extends Carta {
     }
 
     public void aplicarEfecto(Juego juego, Jugador jugadorActual) {
-        juego.pasarTurno(jugadorActual);
+        juego.pasarTurno(jugadorActual); // Solo cambia el color, no salta ni roba
     }
 }

@@ -3,23 +3,30 @@ package juegoUnoAgus;
 import java.util.Objects;
 
 public class CartaMasDos extends Carta {
-    private final Color color;
+    private final String color;
+    private static final String TIPO = "MasDos";
 
-    private CartaMasDos(Color color) {
+    private CartaMasDos(String color) {
+        if (!esColorValido(color)) {
+            throw new IllegalArgumentException("Color inválido: " + color);
+        }
         this.color = color;
     }
 
-    public static CartaMasDos with(Color color) {
-        if (color == null) throw new IllegalArgumentException("Color no puede ser null");
+    public static CartaMasDos with(String color) {
         return new CartaMasDos(color);
     }
 
-    public boolean teGustaMiColor(Color otroColor) {
+    private boolean esColorValido(String color) {
+        return ROJO.equals(color) || AZUL.equals(color) || VERDE.equals(color) || AMARILLO.equals(color);
+    }
+
+    public boolean teGustaMiColor(String otroColor) {
         return this.color.equals(otroColor);
     }
 
     public boolean somosDelMismoTipo(String tipo) {
-        return "CartaMasDos".equals(tipo);
+        return TIPO.equals(tipo);
     }
 
     public boolean teGustaMiNumero(int numero) {
@@ -27,11 +34,10 @@ public class CartaMasDos extends Carta {
     }
 
     public boolean aceptaCarta(Carta otra) {
-        return otra.teGustaMiColor(this.color) || otra.somosDelMismoTipo("MasDos");
-        //return this.teGustaMiColor(otra.obtenerColor())|| this.somosDelMismoTipo("MasDos");
+        return otra.teGustaMiColor(this.color) || otra.somosDelMismoTipo(TIPO);
     }
 
-    public Color obtenerColor() {
+    public String obtenerColor() {
         return color;
     }
 
@@ -41,7 +47,7 @@ public class CartaMasDos extends Carta {
 
     public boolean equals(Object obj) {
         if (!(obj instanceof CartaMasDos otra)) return false;
-        return this.color == otra.color;
+        return this.color.equals(otra.color);
     }
 
     public int hashCode() {

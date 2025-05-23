@@ -48,7 +48,7 @@ public class Juego {
         return d;
     }
 
-    public void jugar(String nombreJugador, Carta carta) {
+    public Juego jugar(String nombreJugador, Carta carta) {
         if (termino()) {
             throw new RuntimeException("El juego ya terminó. No se pueden jugar más cartas.");
         }
@@ -70,18 +70,16 @@ public class Juego {
         jugadorActual.jugarCarta(carta);
         cartaDelPozo = carta;
 
-        // Penalidad por no decir UNO
         if (jugadorActual.cantidadCartas() == 1 && !carta.cantoUno()) {
             robarCartas(jugadorActual, 2);
         }
 
-        // Aplicar efecto de la carta usando polimorfismo
         carta.aplicarEfecto(this, jugadorActual);
 
-        // Verificar si el jugador ganó
         if (jugadorActual.sinCartas()) {
             System.out.println("¡El jugador " + jugadorActual.nombre() + " ha ganado el juego!");
         }
+        return this;
     }
 
     private void validarTurno(String nombre) {
@@ -102,8 +100,16 @@ public class Juego {
         return jugadores.values().stream().anyMatch(Jugador::sinCartas);
     }
 
-    public void levantaCarta(String nombreJugador) {
+    public Juego levantaCarta(String nombreJugador) {
+        if (termino()) {
+            throw new RuntimeException("El juego ya terminó.");
+        }
+
         validarTurno(nombreJugador);
+
+        if (jugadorActual.tieneAlMenosUnaCartaJugable(cartaDelPozo)) {
+            throw new RuntimeException("El jugador tiene cartas jugables, no puede pedir una.");
+        }
 
         if (pilaDeCartas.isEmpty()) {
             throw new RuntimeException("No hay más cartas para robar");
@@ -115,11 +121,17 @@ public class Juego {
         if (cartaRobada.aceptaCarta(cartaDelPozo)) {
             jugadorActual.jugarCarta(cartaRobada);
             cartaDelPozo = cartaRobada;
-            //aplicarEfectoDeCarta(cartaRobada);
+
+            if (jugadorActual.cantidadCartas() == 1 && !cartaRobada.cantoUno()) {
+                robarCartas(jugadorActual, 2);
+            }
+
             cartaRobada.aplicarEfecto(this, jugadorActual);
         } else {
             jugadorActual = controlador.siguiente(jugadorActual);
         }
+
+        return this;
     }
 
     public void cambiarSentido() {
@@ -143,6 +155,7 @@ public class Juego {
             jugador.recibirCarta(pilaDeCartas.removeFirst());
         }
     }
+
     public String ganador() {
         return jugadores.values().stream()
                 .filter(Jugador::sinCartas)
@@ -151,4 +164,5 @@ public class Juego {
                 .orElse(null);
     }
 }
+
 

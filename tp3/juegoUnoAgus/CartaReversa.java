@@ -3,18 +3,25 @@ package juegoUnoAgus;
 import java.util.Objects;
 
 public class CartaReversa extends Carta {
-    private final Color color;
+    private final String color;
+    private static final String TIPO = "Reversa";
 
-    private CartaReversa(Color color) {
+    private CartaReversa(String color) {
+        if (!esColorValido(color)) {
+            throw new IllegalArgumentException("Color inválido: " + color);
+        }
         this.color = color;
     }
 
-    public static CartaReversa with(Color color) {
-        if (color == null) throw new IllegalArgumentException("Color no puede ser null");
+    public static CartaReversa with(String color) {
         return new CartaReversa(color);
     }
 
-    public boolean teGustaMiColor(Color otroColor) {
+    private boolean esColorValido(String color) {
+        return ROJO.equals(color) || AZUL.equals(color) || VERDE.equals(color) || AMARILLO.equals(color);
+    }
+
+    public boolean teGustaMiColor(String otroColor) {
         return this.color.equals(otroColor);
     }
 
@@ -23,13 +30,14 @@ public class CartaReversa extends Carta {
     }
 
     public boolean somosDelMismoTipo(String tipo) {
-        return "CartaReverse".equals(tipo);
+        return TIPO.equals(tipo);
     }
 
     public boolean aceptaCarta(Carta otra) {
-        return otra.teGustaMiColor(this.color) || otra.somosDelMismoTipo("Reverse");
+        return otra.teGustaMiColor(this.color) || otra.somosDelMismoTipo(TIPO);
     }
-    public Color obtenerColor() {
+
+    public String obtenerColor() {
         return color;
     }
 
@@ -39,7 +47,7 @@ public class CartaReversa extends Carta {
 
     public boolean equals(Object obj) {
         if (!(obj instanceof CartaReversa otra)) return false;
-        return this.color == otra.color;
+        return this.color.equals(otra.color);
     }
 
     public int hashCode() {
@@ -48,6 +56,6 @@ public class CartaReversa extends Carta {
 
     public void aplicarEfecto(Juego juego, Jugador jugadorActual) {
         juego.cambiarSentido();
-        juego.pasarTurno(jugadorActual); // Para que el jugador anterior vuelva a jugar
+        juego.pasarTurno(jugadorActual); // El jugador anterior vuelve a jugar
     }
 }
