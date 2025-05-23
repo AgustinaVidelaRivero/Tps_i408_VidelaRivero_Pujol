@@ -166,7 +166,7 @@ public class JuegoUnoTests {
         assertEquals(rojo2, juego.obtenerCartaDelPozo());
     }
 
-    @Test public void test14ReverseConCuatroJugadoresSaltaCorrectamente() {
+    @Test public void test15ReverseConCuatroJugadoresSaltaCorrectamente() {
         assertEquals(rojo2,  new Juego(List.of(reverseRojo, //A
                                                 rojo2,   // B
                                                 rojo2, //C
@@ -182,7 +182,7 @@ public class JuegoUnoTests {
                 .obtenerCartaDelPozo());
     }
 
-    @Test public void test15SkipConTresJugadoresSaltaJugadorSiguiente() {
+    @Test public void test16SkipConTresJugadoresSaltaJugadorSiguiente() {
         assertEquals(verde5,  new Juego(List.of(skipVerde, //A
                                                 rojo2,     // B
                                                 azul2, //C
@@ -196,7 +196,7 @@ public class JuegoUnoTests {
                                         .obtenerCartaDelPozo()); // B salteado
     }
 
-    @Test public void test16JugadorRecibePenalidadPorNoCantarUno() {
+    @Test public void test17JugadorRecibePenalidadPorNoCantarUno() {
         assertEquals(3, new Juego(List.of(rojo2, //A
                                                     azul2,   //B
                                                     rojo2, //A
@@ -207,7 +207,7 @@ public class JuegoUnoTests {
                                             .cantidadCartas("A"));
     }
 
-    @Test public void test17JugadorCantaUnoYNoRecibePenalidad() {
+    @Test public void test18JugadorCantaUnoYNoRecibePenalidad() {
         assertEquals(1, new Juego(List.of(rojo2.uno(), //A
                                                     azul2,  //B
                                                     rojo2, //A
@@ -216,7 +216,7 @@ public class JuegoUnoTests {
          2, "A", "B").jugar("A", rojo2.uno()).cantidadCartas("A"));
     }
 
-    @Test public void test18JugadorLevantaCartaYNoPuedeJugarla() {
+    @Test public void test19JugadorLevantaCartaYNoPuedeJugarla() {
 
         Juego juego = new Juego(List.of(
                 azul4, verde4,
@@ -231,7 +231,7 @@ public class JuegoUnoTests {
         assertEquals(verde5, juego.obtenerCartaDelPozo());
     }
 
-    @Test public void test19JugadorLevantaCartaYPuedeJugarla() {
+    @Test public void test20JugadorLevantaCartaYPuedeJugarla() {
         Juego juego = new Juego(List.of(
                 azul4, //A
                 verde4,  //B
@@ -246,13 +246,6 @@ public class JuegoUnoTests {
         assertEquals(verde5, juego.obtenerCartaDelPozo());
     }
 
-    //NO SE SI HACE FALTA HACER ESTO, pero seria para jugar con un mazo real haciendo:
-    //Juego juego = new Juego(MazoFactory.generarMazoCompleto(), 7, "A", "B"); por ejemplo
-    @Test public void test20CantidadCartasEnMazoCompleto() {
-        List<Carta> mazo = MazoReal.generarMazoCompleto();
-        assertEquals(104, mazo.size()); // no implementamos las wildcard con +4
-    }
-
     @Test public void test21JugadorGanaCuandoSeQuedaSinCartas() {
         Juego juego = new Juego(List.of(
                                         rojo2, // A
@@ -264,8 +257,7 @@ public class JuegoUnoTests {
         //assertEquals("A", juego.ganador());
     }
 
-    //VER SI DEJAMOS ESTO SEGUN LO QUE RESPONDA EMILIO
-    @Test public void testNoSePuedeJugarLuegoDeTerminadoElJuego() {
+    @Test public void test22NoSePuedeJugarLuegoDeTerminadoElJuego() {
 
         Juego juego = new Juego(List.of(
                                         rojo2, // A
