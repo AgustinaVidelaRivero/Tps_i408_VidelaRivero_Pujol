@@ -5,11 +5,11 @@ import java.util.Objects;
 public class CartaNumerada extends Carta {
     private final String color;
     private final int numero;
-    private static final String TIPO = "CartaNumero";
+    private static final String TIPO = "Numerada";
 
     private CartaNumerada(String color, int numero) {
-        if (!esColorValido(color)) throw new IllegalArgumentException("Color inválido: " + color);
-        if (numero < 0 || numero > 9) throw new IllegalArgumentException("Número inválido: " + numero);
+        if (!esColorValido(color)) throw new RuntimeException("Color inválido: " + color);
+        if (numero < 0 || numero > 9) throw new RuntimeException("Número inválido: " + numero);
         this.color = color;
         this.numero = numero;
     }
@@ -40,10 +40,6 @@ public class CartaNumerada extends Carta {
 
     public String obtenerColor() {
         return color;
-    }
-
-    public int obtenerNumero() {
-        return numero;
     }
 
     public boolean equals(Object obj) {

@@ -5,6 +5,7 @@ public abstract class Carta {
     public static final String AZUL = "azul";
     public static final String VERDE = "verde";
     public static final String AMARILLO = "amarillo";
+    public static final String SIN_COLOR = "SIN_COLOR";
 
     private boolean cantoUno = false;
 
@@ -27,7 +28,9 @@ public abstract class Carta {
 
     public abstract String obtenerColor();
 
-    public abstract int obtenerNumero();
-
     public abstract void aplicarEfecto(Juego juego, Jugador jugadorActual);
+
+    public void validarAntesDeJugar() {
+        //no hago nada por defecto
+    }
 }

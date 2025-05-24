@@ -18,12 +18,9 @@ public class Jugador {
         return nombre;
     }
 
-    public void setDerecha(Jugador jugador) {
-        this.derecha = jugador;
-    }
-
-    public void setIzquierda(Jugador jugador) {
-        this.izquierda = jugador;
+    public void conectarCon(Jugador derecha, Jugador izquierda) {
+        this.derecha = derecha;
+        this.izquierda = izquierda;
     }
 
     public Jugador derecha() {
@@ -35,14 +32,17 @@ public class Jugador {
     }
 
     public void recibirCarta(Carta carta) {
+
         cartas.add(carta);
     }
 
     public void jugarCarta(Carta carta) {
+
         cartas.remove(carta);
     }
 
     public boolean tiene(Carta carta) {
+
         return cartas.contains(carta);
     }
 
@@ -54,13 +54,9 @@ public class Jugador {
         return cartas.size();
     }
 
-    public boolean tieneAlMenosUnaCartaJugable(Carta cartaDelPozo) {
-        for (Carta carta : this.cartas) {
-            if (carta.aceptaCarta(cartaDelPozo)) return true;
-        }
-        return false;
+    public boolean puedeJugarSobre(Carta carta) {
+        return cartas.stream().anyMatch(c -> c.aceptaCarta(carta));
     }
-
 }
 
 

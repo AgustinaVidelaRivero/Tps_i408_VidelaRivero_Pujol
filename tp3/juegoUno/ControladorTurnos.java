@@ -13,4 +13,3 @@ public abstract class ControladorTurnos {
 
     public abstract Jugador siguiente(Jugador actual);
 }
-

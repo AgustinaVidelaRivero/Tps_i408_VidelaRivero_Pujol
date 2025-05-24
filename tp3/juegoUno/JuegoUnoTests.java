@@ -39,8 +39,7 @@ public class JuegoUnoTests {
         comodinSinColor = CartaComodin.with();
     }
 
-    @Test
-    public void test01PozoInicialTieneLaCartaCorrecta() {
+    @Test public void test01PozoInicialTieneLaCartaCorrecta() {
         assertEquals(rojo4,
                 new Juego(List.of(rojo2, azul2, verde4, rojo4, rojo4), 2, "A", "B").obtenerCartaDelPozo());
     }
@@ -50,7 +49,6 @@ public class JuegoUnoTests {
                         new Juego(List.of(rojo2, rojo4, azul2, verde4, rojo2), 2, "A", "B")
                                 .jugar("A", rojo2).obtenerCartaDelPozo());
     }
-
 
     @Test public void test03JugadorNoPuedeJugarCartaIncompatible() {
         assertThrows(RuntimeException.class,
@@ -74,7 +72,7 @@ public class JuegoUnoTests {
         assertThrows(RuntimeException.class, () -> juego.jugar("A", rojo4));
     }
 
-    @Test public void test06JugadorPuedeJugarWildcardAsignandoColor() {
+    @Test public void test06JugadorPuedeJugarComodinAsignandoColor() {
         Juego juego = new Juego(List.of(
                 comodinRojo, // recibe comodin  asignado como rojo
                 azul2,
@@ -87,7 +85,7 @@ public class JuegoUnoTests {
         assertThrows(RuntimeException.class, () -> juego.jugar("B", azul2));
     }
 
-    @Test public void test07NoSePuedeJugarWildcardSinColor() {
+    @Test public void test07NoSePuedeJugarUnComodinSinAsignarleColor() {
         Juego juego = new Juego(List.of(
                 comodinSinColor,
                 azul2,
@@ -118,7 +116,7 @@ public class JuegoUnoTests {
         ), 1, "A", "B").jugar("A", azul4));
     }
 
-    @Test public void test10JugadorPuedeApoyarReversePorColor() {
+    @Test public void test10JugadorPuedeApoyarReversaPorColor() {
         assertEquals(reverseRojo, new Juego(List.of(
                                                     reverseRojo,   // jugador A
                                                     azul2,         // jugador B
@@ -126,7 +124,7 @@ public class JuegoUnoTests {
         , 1, "A", "B").jugar("A", reverseRojo).obtenerCartaDelPozo());
     }
 
-    @Test public void test11JugadorNoPuedeApoyarReverseIncompatible() {
+    @Test public void test11JugadorNoPuedeApoyarReversaIncompatible() {
         assertThrows(RuntimeException.class, () -> new Juego(List.of(
                 reverseAzul,  // jugador A
                 rojo2,        //  B
@@ -134,7 +132,7 @@ public class JuegoUnoTests {
         ), 1, "A", "B").jugar("A", reverseAzul));
     }
 
-    @Test public void test12JugadorPuedeApoyarSkipPorColor() {
+    @Test public void test12JugadorPuedeApoyarSalteoPorColor() {
         assertEquals(skipRojo, new Juego(List.of(
                                                 skipRojo,
                                                 azul2,
@@ -142,7 +140,7 @@ public class JuegoUnoTests {
                 1, "A", "B").jugar("A", skipRojo).obtenerCartaDelPozo());
     }
 
-    @Test public void test13JugadorNoPuedeApoyarSkipIncompatible() {
+    @Test public void test13JugadorNoPuedeApoyarSalteoIncompatible() {
         assertThrows(RuntimeException.class, () -> new Juego(List.of(
                 skipAzul,
                 rojo2,
@@ -150,7 +148,7 @@ public class JuegoUnoTests {
         ), 1, "A", "B").jugar("A", skipAzul));
     }
 
-    @Test public void test14ReverseConTresJugadoresInvierteElSentido() {
+    @Test public void test14ReversaConTresJugadoresInvierteElSentido() {
         Juego juego = new Juego(List.of(
                 reverseRojo, //A
                 rojo2,  //B
@@ -166,7 +164,7 @@ public class JuegoUnoTests {
         assertEquals(rojo2, juego.obtenerCartaDelPozo());
     }
 
-    @Test public void test15ReverseConCuatroJugadoresSaltaCorrectamente() {
+    @Test public void test15ReversaConCuatroJugadoresSaltaCorrectamente() {
         assertEquals(rojo2,  new Juego(List.of(reverseRojo, //A
                                                 rojo2,   // B
                                                 rojo2, //C
@@ -182,7 +180,7 @@ public class JuegoUnoTests {
                 .obtenerCartaDelPozo());
     }
 
-    @Test public void test16SkipConTresJugadoresSaltaJugadorSiguiente() {
+    @Test public void test16SalteoConTresJugadoresSaltaJugadorSiguiente() {
         assertEquals(verde5,  new Juego(List.of(skipVerde, //A
                                                 rojo2,     // B
                                                 azul2, //C
@@ -196,7 +194,17 @@ public class JuegoUnoTests {
                                         .obtenerCartaDelPozo()); // B salteado
     }
 
-    @Test public void test17JugadorRecibePenalidadPorNoCantarUno() {
+    @Test public void test17ReverseConDosJugadoresActuaComoSalteo() {
+        Juego juego = new Juego(List.of(
+                reverseRojo, azul2, rojo2
+        ), 1, "A", "B");
+
+        juego.jugar("A", reverseRojo);
+        // B debería ser salteado y A vuelve a jugar
+        assertThrows(RuntimeException.class, () -> juego.jugar("B", azul2));
+    }
+
+    @Test public void test18JugadorRecibePenalidadPorNoCantarUno() {
         assertEquals(3, new Juego(List.of(rojo2, //A
                                                     azul2,   //B
                                                     rojo2, //A
@@ -207,7 +215,7 @@ public class JuegoUnoTests {
                                             .cantidadCartas("A"));
     }
 
-    @Test public void test18JugadorCantaUnoYNoRecibePenalidad() {
+    @Test public void test19JugadorCantaUnoYNoRecibePenalidad() {
         assertEquals(1, new Juego(List.of(rojo2.uno(), //A
                                                     azul2,  //B
                                                     rojo2, //A
@@ -216,7 +224,7 @@ public class JuegoUnoTests {
          2, "A", "B").jugar("A", rojo2.uno()).cantidadCartas("A"));
     }
 
-    @Test public void test19JugadorLevantaCartaYNoPuedeJugarla() {
+    @Test public void test20JugadorLevantaCartaYNoPuedeJugarla() {
 
         Juego juego = new Juego(List.of(
                 azul4, verde4,
@@ -224,14 +232,13 @@ public class JuegoUnoTests {
                 verde5,                // pozo inicial
                 azul2                 // carta que roba A
         ), 2, "A", "B");
-        juego.levantaCarta("A");
+        juego.robarCartaSiNoTiene("A");
         // A debe tener 3 cartas ahora
         assertEquals(3, juego.cantidadCartas("A"));
-        // Pozo sigue siendo rojo4
         assertEquals(verde5, juego.obtenerCartaDelPozo());
     }
 
-    @Test public void test20JugadorLevantaCartaYPuedeJugarla() {
+    @Test public void test21JugadorLevantaCartaYPuedeJugarla() {
         Juego juego = new Juego(List.of(
                 azul4, //A
                 verde4,  //B
@@ -240,13 +247,13 @@ public class JuegoUnoTests {
                 verde5,          // carta del pozo
                 verde5          // esta se roba
         ), 2, "A", "B");
-        juego.levantaCarta("A");
+        juego.robarCartaSiNoTiene("A");
         // A robó verde5 y la jugó (compatible con rojo2), así que vuelve a tener 2
         assertEquals(2, juego.cantidadCartas("A"));
         assertEquals(verde5, juego.obtenerCartaDelPozo());
     }
 
-    @Test public void test21JugadorGanaCuandoSeQuedaSinCartas() {
+    @Test public void test22JugadorGanaCuandoSeQuedaSinCartas() {
         Juego juego = new Juego(List.of(
                                         rojo2, // A
                                         azul2,     // B
@@ -254,11 +261,9 @@ public class JuegoUnoTests {
         ), 1, "A", "B");
         juego.jugar("A", rojo2);
         assertTrue(juego.termino());
-        //assertEquals("A", juego.ganador());
     }
 
-    @Test public void test22NoSePuedeJugarLuegoDeTerminadoElJuego() {
-
+    @Test public void test23NoSePuedeJugarLuegoDeTerminadoElJuego() {
         Juego juego = new Juego(List.of(
                                         rojo2, // A
                                         azul2,     // B
@@ -267,11 +272,9 @@ public class JuegoUnoTests {
         juego.jugar("A", rojo2); // A gana
 
         assertTrue(juego.termino());
-        //assertEquals("A", juego.ganador());
         // B intenta jugar luego de terminado el juego
         assertThrows(RuntimeException.class, () -> juego.jugar("B", azul2));
     }
-
 
     private Carta cartaNumero(String color, int valor) {
         return CartaNumerada.with(color, valor);
@@ -292,8 +295,6 @@ public class JuegoUnoTests {
     private Carta wildcard(String color) {
         return CartaComodin.with().asignarColor(color);
     }
-
-
 }
 
 
