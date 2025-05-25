@@ -13,7 +13,6 @@ public class Juego {
     public static final String EXCEPTION_INTENTA_JUGAR_CARTA_QUE_NO_TIENE = "El jugador no posee la carta indicada.";
     public static final String EXCEPTION_INTENTA_JUGAR_CARTA_INCOMPATIBLE = "La carta no es compatible con la carta visible en la mesa.";
     public static final String EXCEPTION_INTENTA_ROBAR_PERO_PUEDE_JUGAR = "El jugador tiene cartas jugables, no puede pedir una.";
-    public static final String EXCEPTION_SE_ACABO_POZO = "No hay más cartas para robar";
 
     public Juego(List<Carta> mazo, int cartasPorJugador, String... nombres) {
         this.jugadores = new LinkedHashMap<>();
@@ -95,10 +94,6 @@ public class Juego {
 
         if (jugadorActual.puedeJugarSobre(cartaVisible)) {
             throw new RuntimeException(EXCEPTION_INTENTA_ROBAR_PERO_PUEDE_JUGAR);
-        }
-
-        if (mazoDeCartas.isEmpty()) {
-            throw new RuntimeException(EXCEPTION_SE_ACABO_POZO);
         }
 
         Carta cartaRobada = mazoDeCartas.removeFirst();
