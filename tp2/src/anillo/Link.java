@@ -22,8 +22,7 @@ class EmptyLink extends Link {
         throw new RuntimeException("El anillo está vacío, no hay elemento anterior");
     }
 
-    public Object cargo(){
-        throw new RuntimeException("El anillo está vacío, no hay valor cargado");
+    public Object cargo(){ 
     }
 
     public Link add(Object cargo, Stack<Supplier<Link>> stack){
