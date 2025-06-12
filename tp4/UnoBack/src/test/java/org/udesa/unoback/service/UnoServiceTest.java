@@ -1,12 +1,13 @@
-package org.udesa.unoback.model;
+package org.udesa.unoback.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.udesa.unoback.service.Dealer;
-import org.udesa.unoback.service.UnoService;
+import org.udesa.unoback.model.Card;
+import org.udesa.unoback.model.JsonCard;
+import org.udesa.unoback.model.NumberCard;
 
 import java.util.Collection;
 import java.util.List;
