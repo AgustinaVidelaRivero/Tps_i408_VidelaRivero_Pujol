@@ -1,4 +1,4 @@
-package org.udesa.unoback.controller;
+package org.udesa.unoback;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,26 +33,12 @@ public class UnoControllerTest {
     @MockBean
     private Dealer dealer;
 
-//    @BeforeEach
-//    public void setup() {
-//        doReturn(List.of(
-//                new NumberCard("Red", 0), // activa
-//                // Agus
-//                new NumberCard("Red", 1), new NumberCard("Red", 2), new NumberCard("Red", 3),
-//                new NumberCard("Red", 4), new NumberCard("Red", 5), new NumberCard("Red", 6), new NumberCard("Red", 7),
-//                // Trini
-//                new NumberCard("Blue", 1), new NumberCard("Blue", 2), new NumberCard("Blue", 3),
-//                new NumberCard("Blue", 4), new NumberCard("Blue", 5), new NumberCard("Blue", 6), new NumberCard("Blue", 7),
-//                // Carta extra para robar:
-//                new NumberCard("Green", 9)
-//        )).when(dealer).fullDeck();
-//    }
-
     @BeforeEach
     public void setup() {
         doReturn(List.of(
-                new NumberCard("Red", 0), // activa
-                // Agus (le damos Blue 9 para que esté en mano pero no matchee)
+                // activa
+                new NumberCard("Red", 0),
+                //Agus
                 new NumberCard("Blue", 9), new NumberCard("Red", 2), new NumberCard("Red", 3),
                 new NumberCard("Red", 4), new NumberCard("Red", 5), new NumberCard("Red", 6), new NumberCard("Red", 7),
                 // Trini
@@ -79,9 +65,7 @@ public class UnoControllerTest {
 
     @Test
     public void test02PlayerHandReturnsSevenCards() throws Exception {
-        String uuid = createMatch();
-
-        mockMvc.perform(get("/playerhand/" + uuid)
+        mockMvc.perform(get("/playerhand/" + createMatch())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -90,9 +74,7 @@ public class UnoControllerTest {
 
     @Test
     public void test03ActiveCardReturnsValidJsonCard() throws Exception {
-        String uuid = createMatch();
-
-        mockMvc.perform(get("/activecard/" + uuid)
+        mockMvc.perform(get("/activecard/" + createMatch())
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -103,12 +85,9 @@ public class UnoControllerTest {
     @Test
     public void test04PlayCardUpdatesActiveCard() throws Exception {
         String uuid = createMatch();
-
-        JsonCard cardToPlay = new JsonCard("Red", 6, "NumberCard", false);
-
         mockMvc.perform(post("/play/" + uuid + "/Agus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(cardToPlay)))
+                        .content(objectMapper.writeValueAsString(new JsonCard("Red", 6, "NumberCard", false))))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/activecard/" + uuid)
@@ -129,7 +108,6 @@ public class UnoControllerTest {
                 .getContentAsString();
 
         JsonCard[] cardsBefore = objectMapper.readValue(beforeDraw, JsonCard[].class);
-        int handSizeBefore = cardsBefore.length;
 
         mockMvc.perform(post("/draw/" + uuid + "/Agus"))
                 .andExpect(status().isOk());
@@ -141,18 +119,14 @@ public class UnoControllerTest {
                 .getContentAsString();
 
         JsonCard[] cardsAfter = objectMapper.readValue(afterDraw, JsonCard[].class);
-        int handSizeAfter = cardsAfter.length;
 
-        assert(handSizeAfter == handSizeBefore + 1);
+        assert(cardsAfter.length == cardsBefore.length + 1);
     }
 
     @Test
     public void test06PlayCardNotInHandReturnsBadRequest() throws Exception {
-        String uuid = createMatch();
-
         JsonCard fakeCard = new JsonCard("Green", 99, "NumberCard", false);
-
-        mockMvc.perform(post("/play/" + uuid + "/Agus")
+        mockMvc.perform(post("/play/" + createMatch() + "/Agus")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(fakeCard)))
                 .andExpect(status().isBadRequest())
@@ -161,26 +135,18 @@ public class UnoControllerTest {
 
     @Test
     public void test07PlayOutOfTurnReturnsBadRequest() throws Exception {
-        String uuid = createMatch();
-
-        JsonCard cardFromAgus = new JsonCard("Red", 1, "NumberCard", false);
-
-        mockMvc.perform(post("/play/" + uuid + "/Trini")
+        mockMvc.perform(post("/play/" + createMatch() + "/Trini")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(cardFromAgus)))
+                        .content(objectMapper.writeValueAsString(new JsonCard("Red", 1, "NumberCard", false))))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("It is not the turn of player Trini"));
     }
 
     @Test
     public void test08PlayCardThatDoesNotMatchReturnsBadRequest() throws Exception {
-        String uuid = createMatch();
-
-        JsonCard card = new JsonCard("Blue", 9, "NumberCard", false);
-
-        mockMvc.perform(post("/play/" + uuid + "/Agus")
+        mockMvc.perform(post("/play/" + createMatch() + "/Agus")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(card)))
+                        .content(objectMapper.writeValueAsString(new JsonCard("Blue", 9, "NumberCard", false))))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Card does not match the current card's color, number, or kind"));
     }
@@ -190,21 +156,35 @@ public class UnoControllerTest {
         UUID fakeId = UUID.randomUUID();
         mockMvc.perform(get("/playerhand/" + fakeId)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isBadRequest())
                 .andExpect(content().string("Match with ID " + fakeId + " not found."));
     }
 
     @Test
     public void test10InvalidPlayerReturnsBadRequest() throws Exception {
-        String uuid = createMatch();
-
-        JsonCard validCard = new JsonCard("Red", 1, "NumberCard", false);
-
-        mockMvc.perform(post("/play/" + uuid + "/Pepito")
+        mockMvc.perform(post("/play/" + createMatch() + "/Pepito")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validCard)))
+                        .content(objectMapper.writeValueAsString(new JsonCard("Red", 1, "NumberCard", false))))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Unknown player: Pepito"));
+    }
+
+    @Test
+    public void test11MalformedJsonReturnsBadRequest() throws Exception {
+        String malformedJson = "{ \"color\": \"Red\", \"number\": 5, "; // JSON inválido (coma extra, string sin cerrar, etc.)
+        mockMvc.perform(post("/play/" + createMatch() + "/Agus")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(malformedJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid JSON input: malformed or missing fields"));
+    }
+
+    @Test
+    public void test12DrawCardOutOfTurnReturnsBadRequest() throws Exception {
+        // Intenta robar Trini, que no tiene el turno
+        mockMvc.perform(post("/draw/" + createMatch() + "/Trini"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("It is not the turn of player Trini"));
     }
 
     private String createMatch() throws Exception {

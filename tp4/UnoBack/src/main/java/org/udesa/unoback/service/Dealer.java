@@ -12,10 +12,6 @@ public class Dealer {
 
     public List<Card> fullDeck() {
         List<Card> deck = new ArrayList<>();
-//        for (String color : List.of("Red", "Blue", "Green", "Yellow")) {
-//            deck.addAll(cardsOn(color));
-//        }
-
         //generar cartas Red
         deck.addAll(cardsOn("Red"));
         //generar cartas Blue
@@ -37,7 +33,6 @@ public class Dealer {
         List<Card> cards = new ArrayList<>();
         // 1 cero
         cards.add(new NumberCard(color, 0));
-
         //2para cada número del 1 al 9
         for (int i = 1; i <= 9; i++) {
             cards.add(new NumberCard(color, i));

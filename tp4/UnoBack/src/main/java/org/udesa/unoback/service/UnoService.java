@@ -2,10 +2,6 @@ package org.udesa.unoback.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.udesa.unoback.exception.InvalidPlayException;
-import org.udesa.unoback.exception.MatchNotFoundException;
-import org.udesa.unoback.exception.UnknownPlayerException;
-import org.udesa.unoback.exception.WrongTurnException;
 import org.udesa.unoback.model.*;
 
 import java.util.*;
@@ -27,8 +23,7 @@ public class UnoService {
 
     public UUID newMatch(List<String> players) {
         UUID newKey = UUID.randomUUID();
-        List<Card> deck = dealer.fullDeck();
-        sessions.put(newKey, Match.fullMatch(deck, players));
+        sessions.put(newKey, Match.fullMatch(dealer.fullDeck(), players));
         matchPlayers.put(newKey, players);
         return newKey;
     }
@@ -41,15 +36,14 @@ public class UnoService {
     }
 
     public Collection<JsonCard> playerHand(UUID matchId) {
-        Match match = getMatch(matchId);
-        return match.playerHand().stream().map(Card::asJson).toList();
+        return getMatch(matchId).playerHand().stream().map(Card::asJson).toList();
     }
 
     public void play(UUID matchId, String player, JsonCard card) {
         Match match = getMatch(matchId);
 
         if (!matchPlayers.getOrDefault(matchId, List.of()).contains(player)) {
-            throw new UnknownPlayerException(MSG_UNKNOWN_PLAYER + player);
+            throw new IllegalArgumentException(MSG_UNKNOWN_PLAYER + player);
         }
 
         try {
@@ -57,36 +51,42 @@ public class UnoService {
         } catch (RuntimeException e) {
             String msg = e.getMessage();
             if (msg.equals(Player.NotPlayersTurn + player)) {
-                throw new WrongTurnException(MSG_WRONG_TURN + player);
+                throw new IllegalArgumentException(MSG_WRONG_TURN + player);
             } else if (msg.equals(Match.NotACardInHand + player)) {
-                throw new InvalidPlayException(MSG_CARD_NOT_IN_HAND + player);
+                throw new IllegalArgumentException(MSG_CARD_NOT_IN_HAND + player);
             } else if (msg.equals(Match.CardDoNotMatch)) {
-                throw new InvalidPlayException(MSG_CARD_DOES_NOT_MATCH);
+                throw new IllegalArgumentException(MSG_CARD_DOES_NOT_MATCH);
             } else {
-                throw new RuntimeException("Unexpected error: " + msg);
+                throw new IllegalArgumentException("Unexpected error: " + msg);
             }
         }
     }
 
     public void draw(UUID matchId, String player) {
         Match match = getMatch(matchId);
-        match.drawCard(player);
+        try {
+            match.drawCard(player);
+        } catch (RuntimeException e) {
+            String msg = e.getMessage();
+            if (msg.equals(Player.NotPlayersTurn + player)) {
+                throw new IllegalArgumentException(MSG_WRONG_TURN + player);
+            } else {
+                throw e;
+            }
+        }
     }
-
     public JsonCard activeCard(UUID matchId) {
-        Match match = getMatch(matchId);
-        return match.activeCard().asJson();
+        return getMatch(matchId).activeCard().asJson();
     }
 
     public boolean isOver(UUID matchId) {
-        Match match = getMatch(matchId);
-        return match.isOver();
+        return getMatch(matchId).isOver();
     }
 
     private Match getMatch(UUID matchId) {
         Match match = sessions.get(matchId);
         if (match == null) {
-            throw new MatchNotFoundException(String.format(MSG_MATCH_NOT_FOUND, matchId));
+            throw new IllegalArgumentException(String.format(MSG_MATCH_NOT_FOUND, matchId));
         }
         return match;
     }

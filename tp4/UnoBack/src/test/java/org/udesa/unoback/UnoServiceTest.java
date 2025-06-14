@@ -1,4 +1,4 @@
-package org.udesa.unoback.service;
+package org.udesa.unoback;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.udesa.unoback.model.Card;
 import org.udesa.unoback.model.JsonCard;
 import org.udesa.unoback.model.NumberCard;
+import org.udesa.unoback.service.Dealer;
+import org.udesa.unoback.service.UnoService;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,9 +51,7 @@ public class UnoServiceTest {
 
     @Test
     public void test01ShouldReturnSevenCardsWhenMatchStarts() {
-        UUID id = service.newMatch(List.of("Agus", "Trini"));
-        Collection<JsonCard> hand = service.playerHand(id);
-        assertEquals(7, hand.size());
+        assertEquals(7, service.playerHand(service.newMatch(List.of("Agus", "Trini"))).size());
     }
 
     @Test
@@ -66,19 +66,16 @@ public class UnoServiceTest {
 
     @Test
     public void test03ShouldThrowExceptionWhenPlayingCardNotInHand() {
-        UUID id = service.newMatch(List.of("Agus", "Trini"));
-        JsonCard notInHand = new JsonCard("Red", 99, "NumberCard", false);
         assertThrows(RuntimeException.class, () -> {
-            service.play(id, "Agus", notInHand);
+            service.play(service.newMatch(List.of("Agus", "Trini")), "Agus", new JsonCard("Red", 99, "NumberCard", false));
         });
     }
 
     @Test
     public void test04ShouldThrowWhenPlayerTriesToPlayOutOfTurn() {
         UUID matchId = service.newMatch(List.of("Agus", "Trini"));
-        JsonCard cardFromAgus = service.playerHand(matchId).iterator().next();
         assertThrows(RuntimeException.class, () -> {
-            service.play(matchId, "Trini", cardFromAgus);
+            service.play(matchId, "Trini", service.playerHand(matchId).iterator().next());
         });
     }
 
@@ -101,16 +98,14 @@ public class UnoServiceTest {
         )).when(dealer).fullDeck();
 
         UUID id = service.newCustomMatch(dealer.fullDeck(), 1, List.of("Agus", "Trini"));
-        JsonCard card = service.playerHand(id).iterator().next();
-        service.play(id, "Agus", card);
+        service.play(id, "Agus", service.playerHand(id).iterator().next());
         assertTrue(service.isOver(id));
     }
 
     @Test
     public void test07ShouldThrowWhenDrawingWithEmptyDeck() {
-        UUID id = service.newMatch(List.of("Agus", "Trini"));
         assertThrows(IndexOutOfBoundsException.class, () -> {
-            service.draw(id, "Agus");
+            service.draw(service.newMatch(List.of("Agus", "Trini")), "Agus");
         });
     }
 }
