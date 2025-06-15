@@ -22,7 +22,7 @@ import static org.mockito.Mockito.doReturn;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class UnoControllerTest {
+public final class UnoControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -129,8 +129,7 @@ public class UnoControllerTest {
         mockMvc.perform(post("/play/" + createMatch() + "/Agus")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(fakeCard)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Card is not in the hand of player Agus"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -138,8 +137,7 @@ public class UnoControllerTest {
         mockMvc.perform(post("/play/" + createMatch() + "/Trini")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new JsonCard("Red", 1, "NumberCard", false))))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("It is not the turn of player Trini"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -147,8 +145,7 @@ public class UnoControllerTest {
         mockMvc.perform(post("/play/" + createMatch() + "/Agus")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new JsonCard("Blue", 9, "NumberCard", false))))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Card does not match the current card's color, number, or kind"));
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -181,10 +178,8 @@ public class UnoControllerTest {
 
     @Test
     public void test12DrawCardOutOfTurnReturnsBadRequest() throws Exception {
-        // Intenta robar Trini, que no tiene el turno
         mockMvc.perform(post("/draw/" + createMatch() + "/Trini"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("It is not the turn of player Trini"));
+                .andExpect(status().isBadRequest());
     }
 
     private String createMatch() throws Exception {

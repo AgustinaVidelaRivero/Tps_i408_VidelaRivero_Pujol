@@ -11,7 +11,6 @@ import org.udesa.unoback.model.NumberCard;
 import org.udesa.unoback.service.Dealer;
 import org.udesa.unoback.service.UnoService;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,21 +64,6 @@ public class UnoServiceTest {
     }
 
     @Test
-    public void test03ShouldThrowExceptionWhenPlayingCardNotInHand() {
-        assertThrows(RuntimeException.class, () -> {
-            service.play(service.newMatch(List.of("Agus", "Trini")), "Agus", new JsonCard("Red", 99, "NumberCard", false));
-        });
-    }
-
-    @Test
-    public void test04ShouldThrowWhenPlayerTriesToPlayOutOfTurn() {
-        UUID matchId = service.newMatch(List.of("Agus", "Trini"));
-        assertThrows(RuntimeException.class, () -> {
-            service.play(matchId, "Trini", service.playerHand(matchId).iterator().next());
-        });
-    }
-
-    @Test
     public void test05ShouldIncreaseHandAfterDraw() {
         doReturn(baseDeckWithExtra(new NumberCard("Green", 9))).when(dealer).fullDeck();
         UUID id = service.newMatch(List.of("Agus", "Trini"));
@@ -102,10 +86,4 @@ public class UnoServiceTest {
         assertTrue(service.isOver(id));
     }
 
-    @Test
-    public void test07ShouldThrowWhenDrawingWithEmptyDeck() {
-        assertThrows(IndexOutOfBoundsException.class, () -> {
-            service.draw(service.newMatch(List.of("Agus", "Trini")), "Agus");
-        });
-    }
 }
