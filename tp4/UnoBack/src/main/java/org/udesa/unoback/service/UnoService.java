@@ -41,7 +41,7 @@ public class UnoService {
     }
 
     public void draw(UUID matchId, String player) {
-        getMatch(matchId).drawCard(player);  
+        getMatch(matchId).drawCard(player);
     }
 
     public JsonCard activeCard(UUID matchId) {
